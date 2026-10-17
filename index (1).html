@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Batalha da Urna · Edição Premium | Simulação</title>
+<style>
+:root{--green:#39f6a0;--pink:#ff347b;--bg:#090b12;--muted:#aeb4c5;--panel:#151925;--metal1:#f0f0ed;--metal2:#aeb2b9;--metal3:#777d87}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;background:var(--bg);color:#fff}body{display:grid;place-items:center;padding:18px;background:radial-gradient(ellipse at 50% 28%,#39202c 0,transparent 43%),radial-gradient(ellipse at 0% 55%,#0e3e30 0,transparent 38%),radial-gradient(ellipse at 100% 55%,#42152a 0,transparent 38%),#090b12}
+.game{width:min(100%,1050px);min-height:720px;position:relative;overflow:hidden;border:1px solid #ffffff15;border-radius:24px;background:linear-gradient(180deg,#111521f2,#090b12 80%);box-shadow:0 25px 80px #0009;padding:28px 26px 24px}
+.game:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,#ffffff05,transparent 28%,#ffffff04 62%,transparent);z-index:0}
+.header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;z-index:1}.brand{font-size:12px;letter-spacing:3px;font-weight:900;color:#cbd0dc}.brand span{color:var(--green)}.status{font-size:11px;letter-spacing:1px;border:1px solid #ffffff1c;border-radius:30px;padding:9px 13px;color:#c8cedb;background:#ffffff07}.status i{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:7px;box-shadow:0 0 12px var(--green)}
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;position:relative;z-index:1;margin-bottom:26px}.candidate{min-width:0;display:grid;grid-template-columns:76px 1fr;align-items:center;gap:13px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#ffffff0c,#ffffff02);border:1px solid #ffffff16}.candidate.right{grid-template-columns:1fr 76px;text-align:right}.candidate .photo-wrap{position:relative;width:76px;height:88px}.candidate .photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:10px;background:#292e3a;border:1px solid #ffffff26;display:block}.candidate .photo-wrap label{position:absolute;inset:auto 3px 3px 3px;text-align:center;background:#090b12d9;color:#fff;font-size:8px;font-weight:800;letter-spacing:.3px;padding:4px 2px;border-radius:5px;cursor:pointer;opacity:0;transition:opacity .15s}.candidate .photo-wrap:hover label,.candidate .photo-wrap:focus-within label{opacity:1}.candidate .photo-wrap input{display:none}.candidate .name{font-size:12px;font-weight:900;letter-spacing:1.2px;color:var(--green)}.candidate.right .name{color:var(--pink)}.candidate .num{font-size:11px;color:#aeb5c5;margin-top:5px}.score{font-size:36px;font-weight:950;line-height:1.05;margin-top:7px;font-variant-numeric:tabular-nums}.candidate.left .score{color:#c5ffe4;text-shadow:0 0 18px #39f6a044}.candidate.right .score{color:#ffd0e0;text-shadow:0 0 18px #ff347b44}.pct{font-size:12px;color:#abb2c2;margin-top:4px}.versus{font-size:11px;font-weight:900;letter-spacing:2px;color:#72798b;text-align:center}.versus strong{display:block;font-size:22px;color:white;margin-bottom:5px}.bar-wrap{height:10px;background:#ffffff14;border-radius:20px;overflow:hidden;display:flex;position:relative;z-index:1;margin-top:-13px;margin-bottom:24px;border:1px solid #ffffff19}.bar-left{background:linear-gradient(90deg,#20b878,var(--green));width:50%;transition:width .5s;box-shadow:0 0 18px #39f6a044}.bar-right{background:linear-gradient(90deg,#ff6296,#e81f63);flex:1;transition:width .5s}
+.stage{position:relative;z-index:1;display:grid;place-items:center;padding:22px 0 18px;min-height:335px;perspective:1100px}.glow{position:absolute;width:70%;height:200px;top:65px;border-radius:50%;background:#ff8b3811;filter:blur(35px);pointer-events:none}.machine{position:relative;width:min(100%,660px);height:290px;filter:drop-shadow(0 28px 22px #0008);transform:rotateX(2deg)}
+/* Corpo da urna: gabinete inclinado, não uma calculadora */
+.cabinet{position:absolute;left:1%;right:1%;top:23px;height:230px;border-radius:18px 18px 10px 10px;background:linear-gradient(105deg,#777d86 0%,#d5d6d4 9%,#f0f0ec 21%,#c8cbd0 42%,#e6e6e2 61%,#aeb3bb 83%,#747b85 100%);border:1px solid #f8f8f4;box-shadow:inset 0 3px 4px #fff, inset 0 -12px 16px #5555,0 3px 0 #4c515a;}
+.cabinet:before{content:"";position:absolute;left:2%;right:2%;top:-15px;height:26px;border-radius:12px 12px 4px 4px;background:linear-gradient(#f5f5f2,#b8bbc0);border:1px solid #fff;transform:skewX(-8deg);box-shadow:0 -2px 5px #fff8}
+.cabinet:after{content:"";position:absolute;left:5%;right:5%;bottom:-13px;height:14px;border-radius:0 0 8px 8px;background:linear-gradient(#797e86,#393d45);transform:skewX(-5deg)}
+.brandplate{position:absolute;top:12px;right:6%;font-size:9px;letter-spacing:1px;font-weight:900;color:#383b42;text-align:center;line-height:1.4}.brandplate b{font-size:15px;display:block;letter-spacing:2px}
+.screen-frame{position:absolute;left:5%;top:48px;width:48%;height:158px;background:linear-gradient(145deg,#45494e,#202329);padding:8px;border-radius:5px;box-shadow:inset 0 2px 5px #000a,0 2px 4px #0005;border:1px solid #686c72}
+.screen{height:100%;position:relative;overflow:hidden;border:1px solid #7f9291;background:linear-gradient(140deg,#d9e8e6,#a8c7c5);color:#1d3135;padding:10px 9px;text-align:left;font-family:Arial,sans-serif}.screen:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,#ffffff6b,transparent 40%)}.screen-heading{text-align:center;font-size:8px;font-weight:900;letter-spacing:1px;border-bottom:1px solid #4f7072;padding-bottom:5px}.screen-office{font-size:10px;font-weight:800;margin-top:8px}.screen-office small{display:block;font-size:8px;font-weight:500;margin-top:3px}.digits{display:flex;gap:3px;margin-top:8px}.digit{width:28px;height:35px;display:grid;place-items:center;border:1px solid #5c7678;background:#e0ece8;font-size:24px;font-weight:900;font-family:monospace;box-shadow:inset 0 1px 2px #0001}.screen-foot{font-size:7px;font-weight:800;margin-top:7px;letter-spacing:.4px}
+.keyboard-panel{position:absolute;right:5%;top:48px;width:37%;height:158px;padding:9px;border-radius:6px;background:linear-gradient(140deg,#383b40,#15171b);border:2px solid #696d73;box-shadow:inset 0 0 12px #000b,0 2px 4px #0004}.keygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.key{height:28px;display:grid;place-items:center;border-radius:4px;border:1px solid #696d75;color:#f4f5f7;background:linear-gradient(145deg,#53575f,#24262c);font-size:14px;font-weight:800;box-shadow:0 3px 0 #08090c;cursor:pointer;user-select:none;transition:transform .08s,filter .08s}.key:active,.key.pressed{transform:translateY(2px);filter:brightness(1.7);box-shadow:0 1px 0 #08090c}.key-actions{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:5px;margin-top:8px}.key.action{height:27px;font-size:7px;letter-spacing:.2px;color:#15171a}.key.white{background:linear-gradient(#fff,#c7cbd0)}.key.correct{background:linear-gradient(#ffb35e,#e77820)}.key.confirm{background:linear-gradient(#69f0a7,#169c59);color:#082a18}
+.base-label{position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:8px;letter-spacing:3px;font-weight:900;color:#444850}.hand{position:absolute;z-index:8;left:0;top:0;width:40px;height:72px;opacity:0;pointer-events:none;filter:drop-shadow(0 3px 3px #0008);transition:left .17s ease,top .17s ease}.hand.show{opacity:1}.finger{position:absolute;left:13px;top:0;width:15px;height:45px;border:1px solid #a56c4d;border-radius:10px 10px 7px 7px;background:linear-gradient(90deg,#bd805d,#f4c19b 47%,#d39470);transform:rotate(-10deg);transform-origin:bottom center}.palm{position:absolute;left:4px;top:33px;width:31px;height:28px;border:1px solid #a56c4d;border-radius:12px;background:linear-gradient(110deg,#f0bb95,#c88764);transform:rotate(-13deg)}.hand.tap .finger{animation:tap .16s ease-in-out}@keyframes tap{50%{transform:rotate(-10deg) translateY(8px)}}
+.controls{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}.gift{border-radius:12px;padding:15px 12px;display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font-weight:900;border:1px solid #ffffff20;background:#ffffff08;cursor:pointer;transition:transform .15s,background .15s}.gift:hover{transform:translateY(-2px);background:#ffffff12}.gift:disabled{opacity:.45;cursor:wait;transform:none}.gift.green{border-color:#39f6a04d;box-shadow:inset 0 0 24px #39f6a008}.gift.pink{border-color:#ff347b4d;box-shadow:inset 0 0 24px #ff347b08}.gift .emoji{font-size:24px}.gift small{display:block;font-size:10px;font-weight:500;color:#aeb4c5;margin-top:3px}.bottom{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;color:#8c94a8;font-size:11px}.message{min-height:17px;color:#d7dbe5}.reset{background:transparent;border:1px solid #ffffff22;border-radius:8px;color:#c2c8d7;padding:8px 10px;font-size:10px;cursor:pointer}.note{margin-top:12px;text-align:center;color:#646c7e;font-size:10px;line-height:1.5;position:relative;z-index:1}
+@media(max-width:650px){body{padding:0}.game{border-radius:0;border:0;padding:18px 12px;min-height:100vh}.scoreboard{gap:7px}.candidate{grid-template-columns:47px 1fr;gap:7px;padding:8px}.candidate.right{grid-template-columns:1fr 47px}.candidate .photo-wrap{width:47px;height:61px}.candidate .photo-wrap label{opacity:1;font-size:7px;padding:3px 1px}.score{font-size:27px}.candidate .name{font-size:9px;letter-spacing:.4px}.candidate .num,.pct{font-size:10px}.versus{font-size:9px}.versus strong{font-size:17px}.stage{min-height:290px;padding:10px 0}.machine{height:255px}.cabinet{height:210px}.screen-frame{top:45px;left:4%;width:49%;height:140px;padding:5px}.keyboard-panel{top:45px;right:4%;width:39%;height:140px;padding:7px}.keygrid{gap:4px}.key{height:24px}.key-actions{gap:3px;margin-top:7px}.key.action{font-size:6px;height:24px}.brandplate{font-size:7px}.brandplate b{font-size:12px}.controls{gap:7px}.gift{padding:12px 5px;gap:6px;font-size:11px}.gift .emoji{font-size:20px}.bottom{font-size:10px}.status{font-size:9px;padding:8px}}
+
+/* ===============================================
+   EDIÇÃO PREMIUM — refinamento sem trocar a urna
+   =============================================== */
+:root{
+  --green:#46e9a6;--pink:#ff6b91;--bg:#06090f;--muted:#a9b1c0;
+  --ink:#f6f8fd;--stroke:rgba(230,238,255,.09);--gold:#d6ba89;
+}
+html{background:#06090f}
+body{
+  background:
+    radial-gradient(ellipse 60% 44% at 46% -10%,rgba(122,95,150,.22),transparent 73%),
+    radial-gradient(ellipse 43% 45% at -9% 50%,rgba(37,165,112,.13),transparent 80%),
+    radial-gradient(ellipse 45% 45% at 112% 52%,rgba(245,76,117,.13),transparent 80%),
+    linear-gradient(155deg,#070a10,#0b0c14 54%,#070a0f);
+  background-attachment:fixed;
+  padding:24px;
+  -webkit-font-smoothing:antialiased;
+}
+.game{
+  width:min(100%,990px);min-height:unset;padding:28px 32px 22px;
+  border-radius:28px;isolation:isolate;
+  background:linear-gradient(145deg,rgba(22,26,38,.98),rgba(9,12,20,.99) 60%,#0b0e17);
+  border:1px solid rgba(220,225,247,.14);
+  box-shadow:0 38px 100px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.025) inset;
+}
+.game::before{background:linear-gradient(122deg,rgba(255,255,255,.055) 0%,transparent 25%,transparent 72%,rgba(255,255,255,.025)),radial-gradient(circle at 50% 34%,rgba(237,206,171,.035),transparent 52%)}
+.game::after{content:"";position:absolute;z-index:0;inset:8px;border:1px solid rgba(255,255,255,.025);border-radius:23px;pointer-events:none}
+.header{margin-bottom:26px;align-items:center}
+.brand-lockup{display:flex;flex-direction:column;gap:6px;min-width:0}
+.brand-eyebrow{font-size:9px;letter-spacing:2.8px;font-weight:800;color:#9b9ea9;display:flex;align-items:center;gap:9px}
+.brand-signal{height:6px;width:6px;background:#e3c59f;border-radius:50%;box-shadow:0 0 10px #e3c59f8c}
+.brand{font-size:19px;letter-spacing:1.9px;font-weight:950;color:#f6f3f1;white-space:nowrap}
+.brand span{color:var(--gold);font-size:17px;margin-right:5px}
+.brand em{font-style:normal;color:var(--gold)}
+.status{padding:10px 14px;background:linear-gradient(130deg,#1b2530,#151923);border:1px solid #47575387;letter-spacing:1.2px;font-size:10px;font-weight:800;color:#cbd9d8;white-space:nowrap}
+.status i{width:6px;height:6px;background:var(--green);box-shadow:0 0 13px var(--green)}
+.scoreboard{gap:12px;margin-bottom:23px}
+.candidate{
+  gap:15px;padding:13px 15px;
+  border:1px solid rgba(219,228,242,.13);border-radius:18px;
+  background:linear-gradient(128deg,rgba(255,255,255,.065),rgba(255,255,255,.012) 65%);
+  box-shadow:0 12px 25px rgba(0,0,0,.1),inset 0 1px rgba(255,255,255,.055);
+  position:relative;overflow:hidden;
+}
+.candidate::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:linear-gradient(transparent,var(--green),transparent);opacity:.85}
+.candidate.right::before{left:auto;right:0;background:linear-gradient(transparent,var(--pink),transparent)}
+.candidate.left{background:radial-gradient(ellipse at 0 90%,rgba(55,220,152,.07),transparent 70%),linear-gradient(128deg,rgba(255,255,255,.065),rgba(255,255,255,.012) 65%)}
+.candidate.right{background:radial-gradient(ellipse at 100% 90%,rgba(255,82,140,.085),transparent 70%),linear-gradient(128deg,rgba(255,255,255,.065),rgba(255,255,255,.012) 65%)}
+.candidate .photo-wrap{width:76px;height:90px;flex-shrink:0;isolation:isolate}
+.candidate .photo-wrap img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:cover;object-position:center 24%;border-radius:10px;border:1px solid #ffffff2e;box-shadow:0 5px 15px #0007}
+.candidate .photo-wrap label{background:#080d15e8;border:1px solid #ffffff38;backdrop-filter:blur(5px);font-size:8px;padding:5px 2px;border-radius:5px;opacity:0}
+.candidate .photo-wrap:hover label,.candidate .photo-wrap:focus-within label{opacity:1}
+.candidate .name{font-size:11px;font-weight:950;letter-spacing:1.9px;color:var(--green)}
+.candidate.right .name{color:var(--pink)}
+.candidate .num{font-size:10px;letter-spacing:.6px;margin-top:7px;color:#bcc5d2}
+.score{font-size:43px;font-weight:950;letter-spacing:-2px;line-height:1.06;margin-top:8px}
+.candidate.left .score{color:#e7fff3;text-shadow:0 0 24px #28d8963b}
+.candidate.right .score{color:#fff0f4;text-shadow:0 0 24px #ff397e3c}
+.pct{font-size:11px;margin-top:6px;letter-spacing:.4px;color:#99a8bb}
+.versus{width:57px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;font-size:8px;color:#8990a1;letter-spacing:2px}
+.versus strong{height:44px;width:44px;border-radius:50%;display:grid;place-items:center;font-size:16px;letter-spacing:0;margin:0;color:#f0f0f5;background:linear-gradient(135deg,#29303c,#121722);border:1px solid #ffffff25;box-shadow:0 9px 16px #0003,inset 0 1px 1px #ffffff18}
+.versus-line{height:14px;width:1px;background:linear-gradient(#ffffff05,#ffffff2b,#ffffff05)}
+.versus-word{white-space:nowrap}
+.score-labels{display:flex;justify-content:space-between;gap:8px;margin:-1px 2px 10px;font-size:9px;letter-spacing:1.55px;font-weight:800;color:#8e9bad;position:relative;z-index:1}
+.bar-wrap{margin:0 1px 22px;height:12px;border:1px solid #ffffff22;box-shadow:0 2px 6px #0008 inset;background:#121622;padding:2px;gap:2px}
+.bar-left{background:linear-gradient(90deg,#1b9d73,#56e7b0);box-shadow:0 0 13px #46e9a655}
+.bar-right{background:linear-gradient(90deg,#ff9cb3,#ee3b77);box-shadow:0 0 13px #ff6b9150}
+.stage-caption{display:flex;align-items:center;justify-content:space-between;color:#8c96a6;letter-spacing:1.6px;font-size:9px;font-weight:800;position:relative;z-index:1;margin:7px 2px 0}
+.stage-label{display:flex;align-items:center;gap:8px}
+.stage-label-dot{height:5px;width:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 9px var(--gold)}
+.stage-version{color:#696f81}
+.stage{padding:20px 0 19px;min-height:313px}
+.glow{width:75%;height:185px;top:70px;background:radial-gradient(ellipse,rgba(255,200,155,.12),rgba(255,200,155,0) 68%);filter:blur(24px)}
+.machine{filter:drop-shadow(0 23px 20px #000a)}
+.cabinet{border-color:#fefefe;box-shadow:inset 0 3px 4px #fff, inset 0 -12px 16px #5555,0 3px 0 #4c515a,0 13px 26px #0004}
+.cabinet:before{background:linear-gradient(180deg,#fff,#b9bec4)}
+.screen-frame{border-color:#7c8189;box-shadow:0 1px 1px #ffffff66,inset 0 2px 5px #000a,0 2px 4px #0005}
+.screen{background:linear-gradient(150deg,#e3eeea,#a8c6c3);box-shadow:inset 0 2px 7px #517a7340}
+.screen-heading{font-size:8px}
+.screen-preview{position:absolute;right:8px;top:42px;opacity:0;transform:translateY(5px) scale(.95);transition:opacity .22s,transform .22s;pointer-events:none;z-index:1;width:66px;text-align:center}
+.screen-preview.visible{opacity:1;transform:translateY(0) scale(1)}
+.screen-preview img{display:block;width:63px;height:73px;max-width:100%;object-fit:cover;object-position:center 22%;border:2px solid #4d706c;background:#9cbab5;box-shadow:0 2px 4px #0004;border-radius:2px}
+.screen-preview span{font-size:8px;font-weight:900;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;color:#274648}
+.key{transition:transform .09s,filter .09s,box-shadow .09s;touch-action:manipulation}
+.key:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.key.confirm{background:linear-gradient(#72efa8,#12a263)}
+.base-label{letter-spacing:2px}
+.controls{margin-top:9px;gap:13px}
+.gift{
+  justify-content:flex-start;padding:14px 17px;gap:13px;
+  border-radius:15px;border:1px solid #ffffff22;
+  text-align:left;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.023));
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 10px 22px #0002;
+  transition:background .2s,transform .2s,border-color .2s,box-shadow .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.gift:before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .2s;pointer-events:none}
+.gift.green{border-color:#40ce9951}
+.gift.pink{border-color:#f45b8a60}
+.gift.green::before{background:radial-gradient(circle at 0% 50%,#43e3a51b,transparent 65%)}
+.gift.pink::before{background:radial-gradient(circle at 0% 50%,#ff669d20,transparent 65%)}
+.gift:hover:not(:disabled){transform:translateY(-2px);border-color:#ffffff4b;box-shadow:inset 0 1px rgba(255,255,255,.09),0 16px 24px #0003}
+.gift:hover::before{opacity:1}
+.gift:active:not(:disabled){transform:translateY(1px)}
+.gift-symbol{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:13px;font-size:25px;background:#34e2a516;border:1px solid #45e9a534;box-shadow:inset 0 1px #ffffff13}
+.gift.pink .gift-symbol{background:#ff699618;border-color:#ff699634}
+.gift-copy{display:flex;flex-direction:column;gap:4px;flex:1;position:relative;z-index:1;min-width:0}
+.gift-copy b{font-size:13px;font-weight:950;letter-spacing:1.2px}
+.gift-copy small{font-size:10px;font-weight:500;color:#aab5c4;white-space:nowrap}
+.gift-dot{margin:0 5px;color:#7a8799}
+.gift-arrow{font-size:20px;color:#6e8f83;align-self:center;font-weight:500}
+.gift.pink .gift-arrow{color:#a67a91}
+.bottom{border:1px solid #ffffff14;border-radius:12px;background:#ffffff05;margin-top:15px;padding:10px 12px;min-height:49px}
+.message-line{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.message-pip{flex-shrink:0;height:7px;width:7px;border-radius:50%;background:#d5b47f;box-shadow:0 0 9px #d5b47f59}
+.message{font-size:11px;color:#c8d1dc;min-width:0;overflow-wrap:anywhere}
+.reset{font-size:9px;letter-spacing:1px;font-weight:850;padding:8px 10px;border-color:#ffffff1c;white-space:nowrap}
+.reset:hover{background:#ffffff10;color:#fff}
+.footer-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;position:relative;z-index:1}
+.note{margin:0;text-align:left;color:#727b8e;font-size:9px;letter-spacing:.55px;line-height:1.5}
+.live-indicator{display:flex;align-items:center;gap:7px;border:1px solid #ffffff1c;border-radius:999px;background:#111722;padding:7px 10px;flex-shrink:0;font-size:9px;letter-spacing:.8px;font-weight:800;color:#a9b4c4}
+.live-led{background:#d5b47f;border-radius:50%;height:6px;width:6px;box-shadow:0 0 8px #d5b47f73}
+.live-indicator.connected .live-led{background:var(--green);box-shadow:0 0 8px var(--green)}
+.live-indicator.error .live-led{background:#ff6b91;box-shadow:0 0 8px #ff6b91}
+@media(max-width:650px){
+  body{padding:0;background:#080b12;background-attachment:scroll}
+  .game{padding:20px 12px 18px;border:0;border-radius:0;min-height:100vh;width:100%;box-shadow:none}
+  .game::after{display:none}
+  .header{margin-bottom:21px;gap:7px}
+  .brand-eyebrow{font-size:7px;letter-spacing:1.5px;gap:6px}
+  .brand{font-size:13px;letter-spacing:.6px}.brand span{font-size:12px;margin-right:1px}
+  .status{font-size:8px;letter-spacing:.5px;padding:7px 9px}
+  .scoreboard{gap:5px;margin-bottom:14px;grid-template-columns:minmax(0,1fr) 33px minmax(0,1fr)}
+  .candidate{gap:7px;padding:8px;border-radius:11px;grid-template-columns:47px minmax(0,1fr)}
+  .candidate.right{grid-template-columns:minmax(0,1fr) 47px}
+  .candidate .photo-wrap{height:59px;width:47px}
+  .candidate .photo-wrap label{opacity:1;font-size:7px;letter-spacing:0;padding:3px 1px;background:#070b12e8}
+  .candidate .name{font-size:9px;letter-spacing:.1px;line-height:1.15;overflow-wrap:anywhere}
+  .candidate .num{font-size:8px;letter-spacing:0;margin-top:4px}
+  .score{font-size:29px;letter-spacing:-1px;margin-top:5px}
+  .pct{font-size:9px;margin-top:3px}
+  .versus{width:33px;gap:4px;letter-spacing:.5px}.versus strong{width:30px;height:30px;font-size:12px}.versus-line{height:8px}.versus-word{font-size:6px}
+  .score-labels{font-size:7px;margin-bottom:7px;letter-spacing:.9px}
+  .bar-wrap{margin-bottom:14px;height:10px}
+  .stage-caption{margin-top:4px;font-size:7px;letter-spacing:1px}
+  .stage{min-height:268px;padding:15px 0 6px}
+  .machine{height:255px}
+  .screen-preview{width:37px;top:38px;right:3px}
+  .screen-preview img{width:35px;height:42px;border-width:1px}
+  .screen-preview span{font-size:5px;margin-top:1px}
+  .screen-heading{font-size:6px;letter-spacing:0}
+  .screen-office{font-size:8px}
+  .screen-office small{font-size:6px}
+  .digits{margin-top:6px}.digit{height:27px;width:23px;font-size:19px}
+  .screen-foot{font-size:6px;margin-top:5px}
+  .brandplate{top:12px}
+  .controls{gap:8px;margin-top:6px}
+  .gift{gap:7px;padding:10px 8px;border-radius:11px}
+  .gift-symbol{flex-basis:34px;width:34px;height:38px;border-radius:9px;font-size:20px}
+  .gift-copy{gap:3px}.gift-copy b{font-size:10px;letter-spacing:.5px}
+  .gift-copy small{font-size:8px;letter-spacing:-.1px;white-space:normal;line-height:1.25}
+  .gift-dot{margin:0 2px}.gift-arrow{display:none}
+  .bottom{margin-top:10px;padding:8px 9px;gap:8px}
+  .message{font-size:9px}.reset{font-size:8px;padding:8px 6px;letter-spacing:.2px}
+  .footer-line{flex-direction:column;gap:10px;align-items:stretch;margin-top:13px}
+  .note{text-align:center;font-size:8px}
+  .live-indicator{align-self:center;font-size:8px;padding:6px 9px}
+}
+@media(max-width:370px){
+  .brand{font-size:12px}.brand-eyebrow{font-size:6px}
+  .status{font-size:7px}.candidate{grid-template-columns:41px minmax(0,1fr);gap:5px;padding:6px}
+  .candidate.right{grid-template-columns:minmax(0,1fr) 41px}
+  .candidate .photo-wrap{width:41px;height:54px}
+  .candidate .name{font-size:8px}.candidate .num{font-size:7px}.score{font-size:25px}
+  .stage{min-height:260px}
+  .keygrid{gap:3px}.key{font-size:12px}
+  .gift{padding:9px 6px;gap:6px}.gift-symbol{flex-basis:29px;width:29px;font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){.gift,.bar-left,.bar-right,.screen-preview,.key{transition:none!important}}
+
+</style>
+</head>
+<body>
+<main class="game">
+  <header class="header"><div class="brand-lockup"><div class="brand-eyebrow"><span class="brand-signal"></span> EXPERIÊNCIA INTERATIVA</div><div class="brand"><span>◈</span> BATALHA <em>DA URNA</em></div></div><div class="status"><i></i> SIMULAÇÃO ATIVA</div></header>
+  <section class="scoreboard" aria-label="Placar dos candidatos">
+    <article class="candidate left">
+      <div class="photo-wrap"><img id="lulaPhoto" src="https://commons.wikimedia.org/wiki/Special:FilePath/Luiz_In%C3%A1cio_Lula_da_Silva_(2023).jpg" alt="Luiz Inácio Lula da Silva" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22300%22%20viewBox%3D%220%200%20240%20300%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23123d38%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2307171c%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22300%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22107%22%20r%3D%2247%22%20fill%3D%22%23ffffff2e%22%2F%3E%3Cpath%20d%3D%22M35%20279c8-74%2048-102%2085-102s77%2028%2085%20102%22%20fill%3D%22%23ffffff2e%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%22286%22%20text-anchor%3D%22middle%22%20fill%3D%22%23ffffffcc%22%20font-size%3D%2213%22%20font-family%3D%22Arial%22%20font-weight%3D%22bold%22%20letter-spacing%3D%222%22%3ELULA%3C%2Ftext%3E%3C%2Fsvg%3E'"><label for="lulaPhotoFile" title="Trocar foto do Lula">TROCAR FOTO</label><input id="lulaPhotoFile" type="file" accept="image/*" aria-label="Escolher nova foto do Lula"></div>
+      <div><div class="name">LULA</div><div class="num">NÚMERO 13 · 🌹</div><div class="score" id="score13">14</div><div class="pct" id="pct13">13,9%</div></div>
+    </article>
+    <div class="versus"><span class="versus-line"></span><strong>VS</strong><span class="versus-word">DUELO</span><span class="versus-line"></span></div>
+    <article class="candidate right">
+      <div><div class="name">FLÁVIO BOLSONARO</div><div class="num">NÚMERO 22 · ❤️</div><div class="score" id="score22">87</div><div class="pct" id="pct22">86,1%</div></div>
+      <div class="photo-wrap"><img id="flavioPhoto" src="https://commons.wikimedia.org/wiki/Special:FilePath/Fl%C3%A1vio_Bolsonaro.jpg" alt="Flávio Bolsonaro" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22300%22%20viewBox%3D%220%200%20240%20300%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%233b1d35%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23101521%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22300%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22107%22%20r%3D%2247%22%20fill%3D%22%23ffffff2e%22%2F%3E%3Cpath%20d%3D%22M35%20279c8-74%2048-102%2085-102s77%2028%2085%20102%22%20fill%3D%22%23ffffff2e%22%2F%3E%3Ctext%20x%3D%22120%22%20y%3D%22286%22%20text-anchor%3D%22middle%22%20fill%3D%22%23ffffffcc%22%20font-size%3D%2213%22%20font-family%3D%22Arial%22%20font-weight%3D%22bold%22%20letter-spacing%3D%222%22%3EFL%C3%81VIO%3C%2Ftext%3E%3C%2Fsvg%3E'"><label for="flavioPhotoFile" title="Trocar foto do Flávio">TROCAR FOTO</label><input id="flavioPhotoFile" type="file" accept="image/*" aria-label="Escolher nova foto do Flávio"></div>
+    </article>
+  </section>
+  <div class="score-labels"><span>🌹 VOTOS · 13</span><span>VOTOS · 22 ❤️</span></div><div class="bar-wrap" role="presentation"><div class="bar-left" id="bar13"></div><div class="bar-right" id="bar22"></div></div>
+  <div class="stage-caption"><span class="stage-label"><span class="stage-label-dot"></span> SIMULADOR DE VOTAÇÃO</span><span class="stage-version">EDIÇÃO PREMIUM / 01</span></div>
+  <section class="stage" aria-label="Urna eletrônica animada">
+    <div class="glow"></div>
+    <div class="machine">
+      <div class="cabinet">
+        <div class="brandplate"><b>URNA</b>ELETRÔNICA · SIMULADOR</div>
+        <div class="screen-frame"><div class="screen">
+          <div class="screen-heading">SIMULADOR · VOTAÇÃO FICTÍCIA</div>
+          <div class="screen-office" id="screenOffice">SEU VOTO PARA<br>PRESIDENTE<small>Digite o número do candidato</small></div>
+          <div class="digits"><span class="digit" id="d1">_</span><span class="digit" id="d2">_</span></div>
+          <div class="screen-foot" id="screenStatus">AGUARDANDO VOTO</div><div class="screen-preview" id="screenPreview" aria-hidden="true"><img id="screenPreviewPhoto" alt=""><span id="screenPreviewName"></span></div>
+        </div></div>
+        <div class="keyboard-panel" id="keyboard">
+          <div class="keygrid">
+            <button class="key" data-num="1">1</button><button class="key" data-num="2">2</button><button class="key" data-num="3">3</button>
+            <button class="key" data-num="4">4</button><button class="key" data-num="5">5</button><button class="key" data-num="6">6</button>
+            <button class="key" data-num="7">7</button><button class="key" data-num="8">8</button><button class="key" data-num="9">9</button>
+            <span></span><button class="key" data-num="0">0</button><span></span>
+          </div>
+          <div class="key-actions"><button class="key action white" id="whiteKey">BRANCO</button><button class="key action correct" id="correctKey">CORRIGE</button><button class="key action confirm" id="confirmKey">CONFIRMA</button></div>
+          <div class="hand" id="hand"><div class="finger"></div><div class="palm"></div></div>
+        </div>
+        <div class="base-label">BATALHA DA URNA · EDIÇÃO INTERATIVA</div>
+      </div>
+    </div>
+  </section>
+  <section class="controls">
+    <button class="gift green" id="gift13" type="button"><span class="gift-symbol">🌹</span><span class="gift-copy"><b>ROSA</b><small>Lula · 13 <span class="gift-dot">•</span> +2 pontos</small></span><span class="gift-arrow" aria-hidden="true">↗</span></button>
+    <button class="gift pink" id="gift22" type="button"><span class="gift-symbol">❤️</span><span class="gift-copy"><b>CORAÇÃO</b><small>Flávio · 22 <span class="gift-dot">•</span> +2 pontos</small></span><span class="gift-arrow" aria-hidden="true">↗</span></button>
+  </section>
+  <div class="bottom"><div class="message-line"><span class="message-pip"></span><div class="message" id="message" aria-live="polite">Pronto para testar os presentes.</div></div><button class="reset" id="reset" type="button">↺ REINICIAR</button></div>
+  <div class="footer-line"><div class="note">SIMULAÇÃO FICTÍCIA PARA ENTRETENIMENTO · NÃO REPRESENTA ELEIÇÃO OU RESULTADO OFICIAL</div><div id="liveIndicator" class="live-indicator"><span class="live-led"></span><span id="liveIndicatorText">FIREBASE · AGUARDANDO</span></div></div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = {13:14, 22:87, vote:'', busy:false};
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const keyboard = $('keyboard'), hand = $('hand');
+  // Sons gerados no navegador: clique curto nas teclas e sequência especial ao confirmar.
+  let audioCtx = null;
+  function getAudio(){
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    if (!audioCtx) audioCtx = new AudioContextClass();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function tone(freq, start, duration, type='sine', volume=0.07){
+    const ctx = getAudio(); if (!ctx) return;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(start); osc.stop(start + duration + 0.02);
+  }
+  document.addEventListener('pointerdown', () => { getAudio(); }, {once:true});
+  document.addEventListener('touchstart', () => { getAudio(); }, {once:true, passive:true});
+  function playKeySound(){
+    const ctx = getAudio(); if (!ctx) return;
+    const now = ctx.currentTime;
+    tone(720, now, 0.055, 'square', 0.035);
+    tone(430, now + 0.012, 0.045, 'triangle', 0.025);
+  }
+  function playConfirmSound(){
+    const ctx = getAudio(); if (!ctx) return;
+    const now = ctx.currentTime;
+    // Toque de confirmação inspirado no bip clássico de urna, sintetizado (não é gravação oficial).
+    tone(880, now, 0.12, 'sine', 0.075);
+    tone(1175, now + 0.13, 0.16, 'sine', 0.08);
+    tone(1568, now + 0.31, 0.28, 'sine', 0.085);
+  }
+  let lulaPhotoUrl = null;
+  let flavioPhotoUrl = null;
+  $('lulaPhotoFile').addEventListener('change', event => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setMessage('Escolha um arquivo de imagem (JPG, PNG ou WebP).'); return; }
+    if (lulaPhotoUrl) URL.revokeObjectURL(lulaPhotoUrl);
+    lulaPhotoUrl = URL.createObjectURL(file);
+    $('lulaPhoto').src = lulaPhotoUrl;
+    renderVote();
+    setMessage('Foto do Lula atualizada.');
+  });
+  $('flavioPhotoFile').addEventListener('change', event => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setMessage('Escolha um arquivo de imagem (JPG, PNG ou WebP).'); return; }
+    if (flavioPhotoUrl) URL.revokeObjectURL(flavioPhotoUrl);
+    flavioPhotoUrl = URL.createObjectURL(file);
+    $('flavioPhoto').src = flavioPhotoUrl;
+    renderVote();
+    setMessage('Foto do Flávio atualizada.');
+  });
+  function renderVote(){
+    $('d1').textContent = state.vote[0] || '_';
+    $('d2').textContent = state.vote[1] || '_';
+    const candidate = ['13','22'].includes(state.vote) ? state.vote : null;
+    const preview = $('screenPreview');
+    preview.classList.toggle('visible', !!candidate);
+    if (candidate) {
+      $('screenPreviewPhoto').src = $(candidate === '13' ? 'lulaPhoto' : 'flavioPhoto').src;
+      $('screenPreviewName').textContent = candidate === '13' ? 'LULA' : 'FLÁVIO';
+    }
+  }
+  function renderScore(){
+    const total = state[13] + state[22] || 1;
+    const a = state[13] / total * 100, b = 100-a;
+    $('score13').textContent = state[13]; $('score22').textContent = state[22];
+    $('pct13').textContent = a.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+    $('pct22').textContent = b.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+    $('bar13').style.width = a+'%'; $('bar22').style.width = b+'%';
+  }
+  function setMessage(text){ $('message').textContent = text; }
+  function typeDigit(d){ if(state.busy || state.vote.length>=2) return; playKeySound(); state.vote += d; renderVote(); $('screenStatus').textContent='DIGITANDO...'; }
+  document.querySelectorAll('[data-num]').forEach(key => key.addEventListener('click',()=>typeDigit(key.dataset.num)));
+  $('confirmKey').addEventListener('click',async ()=>{
+    if(state.busy) return;
+    if(!['13','22'].includes(state.vote)) { playKeySound(); setMessage('Digite 13 ou 22 antes de confirmar.'); return; }
+    state.busy = true;
+    const number = state.vote;
+    playConfirmSound();
+    $('confirmKey').classList.add('pressed');
+    $('screenStatus').textContent='VOTO CONFIRMADO';
+    state[number] += 2;
+    renderScore();
+    setMessage('✓ Voto '+number+' confirmado · +2 pontos (teste manual).');
+    await wait(800);
+    $('confirmKey').classList.remove('pressed');
+    state.vote=''; renderVote();
+    $('screenOffice').innerHTML='SEU VOTO PARA<br>PRESIDENTE<small>Digite o número do candidato</small>';
+    $('screenStatus').textContent='AGUARDANDO VOTO';
+    state.busy=false;
+  });
+  $('correctKey').addEventListener('click',()=>{if(state.busy)return;playKeySound();state.vote='';renderVote();$('screenStatus').textContent='DIGITE NOVAMENTE';});
+  $('whiteKey').addEventListener('click',()=>{if(state.busy)return;playKeySound();state.vote='';renderVote();$('screenOffice').innerHTML='VOTO EM<br>BRANCO';$('screenStatus').textContent='CONFIRME SEU VOTO';});
+  function moveHand(key){
+    const r=key.getBoundingClientRect(), k=keyboard.getBoundingClientRect();
+    hand.style.left=(r.left-k.left+r.width/2-17)+'px'; hand.style.top=(r.top-k.top-12)+'px'; hand.classList.add('show');
+  }
+  async function tap(key){if(key.id==='confirmKey')playConfirmSound();else playKeySound();moveHand(key);hand.classList.remove('tap');void hand.offsetWidth;hand.classList.add('tap');key.classList.add('pressed');await wait(190);key.classList.remove('pressed');hand.classList.remove('tap');}
+  async function sendGift(candidate){
+    if(state.busy)return;
+    state.busy=true; $('gift13').disabled=true; $('gift22').disabled=true;
+    try{
+      state.vote='';renderVote();$('screenOffice').innerHTML='SEU VOTO PARA<br>PRESIDENTE<small>Digite o número do candidato</small>';$('screenStatus').textContent='DIGITANDO...';
+      setMessage('Presente detectado: digitando '+candidate+' na urna...');
+      for(const d of candidate){const key=keyboard.querySelector('[data-num="'+d+'"]');await tap(key);state.vote+=d;renderVote();await wait(170);}
+      await wait(240);await tap($('confirmKey'));$('screenStatus').textContent='FIM';$('screenOffice').innerHTML='<b style="font-size:13px">VOTO CONFIRMADO</b><small>Simulação concluída</small>';
+      state[candidate]+=2;renderScore();setMessage('✓ Voto '+candidate+' confirmado · +2 pontos para '+(candidate==='13'?'Lula':'Flávio')+'.');
+      const score=$(candidate==='13'?'score13':'score22');score.animate([{transform:'scale(1)',filter:'brightness(1)'},{transform:'scale(1.25)',filter:'brightness(1.8)'},{transform:'scale(1)',filter:'brightness(1)'}],{duration:500});
+      await wait(900);state.vote='';renderVote();$('screenOffice').innerHTML='SEU VOTO PARA<br>PRESIDENTE<small>Digite o número do candidato</small>';$('screenStatus').textContent='AGUARDANDO VOTO';
+    } finally {hand.classList.remove('show','tap');state.busy=false;$('gift13').disabled=false;$('gift22').disabled=false;}
+  }
+  // Fila: presentes simultâneos não são perdidos durante a animação.
+  const filaTikTok = [];
+  let processandoTikTok = false;
+  window.receberVotoTikTok = (numero, quantidade=1) => {
+    if (!['13','22'].includes(String(numero))) return;
+    const n = Math.max(1, Math.min(1000, Number(quantidade) || 1));
+    for (let i=0; i<n; i++) filaTikTok.push(String(numero));
+    if (!processandoTikTok) void executarFilaTikTok();
+  };
+  async function executarFilaTikTok(){
+    processandoTikTok=true;
+    try {
+      while (filaTikTok.length) {
+        if (state.busy) { await wait(250); continue; }
+        await sendGift(filaTikTok.shift());
+      }
+    } finally { processandoTikTok=false; }
+  }
+  $('gift13').addEventListener('click',()=>sendGift('13'));
+  $('gift22').addEventListener('click',()=>sendGift('22'));
+  $('reset').addEventListener('click',()=>{if(state.busy)return;state[13]=0;state[22]=0;state.vote='';renderVote();renderScore();$('screenOffice').innerHTML='SEU VOTO PARA<br>PRESIDENTE<small>Digite o número do candidato</small>';$('screenStatus').textContent='AGUARDANDO VOTO';setMessage('Placar reiniciado.');});
+  renderVote();renderScore();
+})();
+</script>
+<script type="module">
+// Preencha os dados do seu app web em firebaseConfig abaixo.
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getDatabase, ref, get, query, orderByKey, limitToLast, startAfter, onChildAdded } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
+const firebaseConfig = {
+  apiKey: 'AIzaSyCYqBT-7CTC3rVlVtJPoPEviV_STFI4l60',
+  authDomain: 'batalha-da-urna.firebaseapp.com',
+  databaseURL: 'https://batalha-da-urna-default-rtdb.firebaseio.com',
+  projectId: 'batalha-da-urna',
+  storageBucket: 'batalha-da-urna.firebasestorage.app',
+  messagingSenderId: '102373615572',
+  appId: '1:102373615572:web:ae63f6d45be2f3f9849841'
+};
+const indicator = document.getElementById('liveIndicator');
+const indicatorText = document.getElementById('liveIndicatorText');
+const setSync = (msg, kind='') => { indicatorText.textContent = msg; indicator.className = 'live-indicator ' + kind; };
+if (firebaseConfig.apiKey.startsWith('COLE_')) {
+  setSync('CONFIGURE O FIREBASE','error');
+} else {
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const eventsRef = ref(db, 'urna/events');
+    // Ignora votos antigos ao abrir a página; recebe apenas os novos.
+    const last = await get(query(eventsRef, orderByKey(), limitToLast(1)));
+    const lastKey = last.exists() ? Object.keys(last.val())[0] : null;
+    const fresh = lastKey ? query(eventsRef, orderByKey(), startAfter(lastKey)) : query(eventsRef, orderByKey());
+    onChildAdded(fresh, snapshot => {
+      const e = snapshot.val();
+      if (e && (e.numero === '13' || e.numero === '22')) {
+        window.receberVotoTikTok(e.numero, e.quantidade || 1);
+      }
+    }, error => { setSync('ERRO NA SINCRONIZAÇÃO','error'); console.error(error); });
+    setSync('FIREBASE · CONECTADO','connected');
+  } catch (error) { setSync('ERRO NA CONEXÃO','error'); console.error(error); }
+}
+</script>
+</body>
+</html>
