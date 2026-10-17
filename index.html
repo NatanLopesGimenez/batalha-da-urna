@@ -1,1186 +1,1159 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<!-- MODO APLICATIVO NO IPHONE -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Batalha da Urna">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#090c14">
-
-<title>Batalha da Urna | Edição Premium</title>
+<title>Batalha da Urna • Edição Premium</title>
 
 <style>
-:root {
-  --bg: #090c14;
-  --panel: #151a26;
-  --green: #46e9a6;
-  --pink: #ff6b91;
-  --gold: #d6ba89;
-  --muted: #aab4c5;
+:root{
+  --green:#4ce9aa;
+  --pink:#ff6797;
+  --gold:#e5c898;
+  --text:#f4f6ff;
+  --muted:#9eabc2;
+  --bg:#080b13;
 }
-
-* { box-sizing: border-box; }
-
-html {
-  min-height: 100%;
-  background: var(--bg);
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  min-height: 100dvh;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-  color: white;
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg)}
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  color:var(--text);
   background:
-    radial-gradient(ellipse at 0% 55%, #103c30 0, transparent 40%),
-    radial-gradient(ellipse at 100% 55%, #391526 0, transparent 40%),
-    radial-gradient(ellipse at 50% 0%, #242038 0, transparent 50%),
-    #090c14;
-  -webkit-font-smoothing: antialiased;
+    radial-gradient(ellipse at 0 45%,#123a32 0,transparent 40%),
+    radial-gradient(ellipse at 100% 40%,#38182c 0,transparent 42%),
+    linear-gradient(150deg,#131321,var(--bg) 65%);
+}
+button{
+  font:inherit;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.game{
+  width:min(100%,970px);
+  padding:26px 28px 20px;
+  border:1px solid #ffffff25;
+  border-radius:24px;
+  background:linear-gradient(145deg,#1b1f2b 0%,#0b0e17 78%);
+  box-shadow:0 30px 85px #0009;
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
 }
 
-button {
-  font-family: inherit;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+/* REFLEXO ANIMADO CONSTANTE */
+.game::before{
+  content:"";
+  position:absolute;
+  inset:-80% -60%;
+  background:linear-gradient(112deg,transparent 45%,#ffffff07 51%,transparent 57%);
+  animation:sweep 9s linear infinite;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes sweep{
+  from{transform:translateX(-28%)}
+  to{transform:translateX(28%)}
+}
+.game>*{position:relative;z-index:1}
+
+.top,.bottom,.footer,.mini-labels{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.top{margin-bottom:24px}
+.eyebrow{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:2.8px;
+  margin-bottom:7px;
+}
+.brand{
+  font-size:19px;
+  font-weight:950;
+  letter-spacing:1px;
+}
+.brand em{font-style:normal;color:var(--gold)}
+.status{
+  font-size:9px;
+  letter-spacing:1px;
+  white-space:nowrap;
+  border:1px solid #ffffff27;
+  background:#ffffff07;
+  border-radius:50px;
+  padding:10px 12px;
+  color:#d3e5df;
+  font-weight:800;
+}
+.dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 14px var(--green);
+  margin-right:6px;
+  vertical-align:middle;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{
+  50%{opacity:.45;transform:scale(1.5)}
 }
 
-.game {
-  width: min(100%, 990px);
-  padding: 28px 30px 22px;
-  border-radius: 26px;
-  border: 1px solid #ffffff20;
-  background: linear-gradient(145deg, #171c2a, #090c14 78%);
-  box-shadow: 0 30px 80px #0009;
-  overflow: hidden;
+/* PLACAR */
+.scoreboard{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+}
+.candidate{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:12px;
+  border:1px solid #ffffff1f;
+  border-radius:16px;
+  background:linear-gradient(130deg,#ffffff0e,#ffffff02);
+  box-shadow:inset 0 1px #ffffff0b;
+}
+.candidate.left{box-shadow:inset 2px 0 #4ce9aa80}
+.candidate.right{
+  justify-content:flex-end;
+  text-align:right;
+  box-shadow:inset -2px 0 #ff679780;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 26px;
+/* FOTOS LIVRES DE SOBREPOSIÇÃO */
+.portrait-box{
+  flex:0 0 73px;
+  width:73px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.portrait{
+  height:86px;
+  width:100%;
+  overflow:hidden;
+  border-radius:9px;
+  border:1px solid #ffffff40;
+  background:#343b49;
+}
+.portrait img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 23%;
+}
+.photo-edit{
+  border:1px solid #ffffff22;
+  background:#101724;
+  color:#bfcde0;
+  border-radius:6px;
+  padding:5px 2px;
+  font-weight:700;
+  font-size:8px;
+  text-align:center;
+  cursor:pointer;
+}
+.photo-edit:hover{background:#202c40}
+.photo-input{display:none}
+
+.details{min-width:0}
+.name{
+  font-weight:900;
+  font-size:11px;
+  letter-spacing:1px;
+  color:var(--green);
+}
+.right .name{color:var(--pink)}
+.number{
+  font-size:10px;
+  color:#aab5c6;
+  margin-top:5px;
+}
+.score{
+  font-size:42px;
+  font-weight:950;
+  line-height:1.1;
+  margin-top:7px;
+  font-variant-numeric:tabular-nums;
+}
+.percent{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+.vs{
+  text-align:center;
+  font-size:8px;
+  font-weight:800;
+  color:#9aa3b5;
+  letter-spacing:1px;
+}
+.vs b{
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  border:1px solid #ffffff28;
+  border-radius:50%;
+  background:linear-gradient(145deg,#303746,#111621);
+  color:white;
+  font-size:16px;
+  margin:0 auto 6px;
+  box-shadow:0 9px 17px #0005;
+}
+.mini-labels{
+  font-size:9px;
+  letter-spacing:1.3px;
+  font-weight:800;
+  color:#97a5b9;
+  margin:21px 2px 8px;
+}
+.meter{
+  position:relative;
+  display:flex;
+  gap:2px;
+  padding:2px;
+  height:12px;
+  background:#111724;
+  border:1px solid #ffffff26;
+  border-radius:30px;
+  overflow:hidden;
+}
+.meter::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:-35%;
+  width:29%;
+  background:linear-gradient(90deg,transparent,#ffffff45,transparent);
+  filter:blur(3px);
+  animation:meterGlow 3s linear infinite;
+  pointer-events:none;
+}
+@keyframes meterGlow{to{left:110%}}
+.meter13{
+  background:linear-gradient(90deg,#239a70,#55e6b0);
+  width:50%;
+  border-radius:30px;
+  transition:width .5s;
+}
+.meter22{
+  background:linear-gradient(90deg,#ff9ab3,#e83b76);
+  flex:1;
+  border-radius:30px;
 }
 
-.eyebrow {
-  color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  margin-bottom: 7px;
-  font-weight: bold;
+/* URNA */
+.stage-title{
+  display:flex;
+  justify-content:space-between;
+  margin:25px 2px 4px;
+  font-size:9px;
+  letter-spacing:1.3px;
+  font-weight:800;
+  color:#9aa8bb;
 }
-
-.brand {
-  font-weight: 950;
-  font-size: 20px;
-  letter-spacing: 1.3px;
+.stage{
+  display:grid;
+  place-items:center;
+  min-height:308px;
+  perspective:1000px;
 }
-
-.brand span { color: var(--gold); }
-
-.status {
-  border: 1px solid #ffffff25;
-  padding: 10px 13px;
-  border-radius: 30px;
-  color: #c5d2d1;
-  font-size: 10px;
-  white-space: nowrap;
+.machine{
+  width:min(100%,650px);
+  height:265px;
+  position:relative;
+  filter:drop-shadow(0 21px 18px #000b);
+  animation:float 4s ease-in-out infinite;
 }
-
-.led {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 12px var(--green);
+@keyframes float{
+  50%{transform:translateY(-4px)}
 }
-
-.scoreboard {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) 55px minmax(0,1fr);
-  gap: 13px;
-  align-items: center;
-}
-
-.candidate {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 13px;
-  border-radius: 16px;
-  border: 1px solid #ffffff20;
-  background: linear-gradient(135deg, #ffffff0d, #ffffff03);
-}
-
-.candidate.right {
-  justify-content: flex-end;
-  text-align: right;
-}
-
-.photo {
-  flex-shrink: 0;
-  position: relative;
-  width: 76px;
-  height: 89px;
-}
-
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 22%;
-  border: 1px solid #ffffff40;
-  border-radius: 10px;
-  background: #232a36;
-}
-
-.photo label {
-  position: absolute;
-  bottom: 3px;
-  left: 3px;
-  right: 3px;
-  cursor: pointer;
-  text-align: center;
-  font-size: 7px;
-  font-weight: bold;
-  padding: 5px 2px;
-  background: #090c14de;
-  border-radius: 5px;
-}
-
-.photo input { display: none; }
-
-.name {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.1px;
-  color: var(--green);
-}
-
-.right .name { color: var(--pink); }
-
-.number {
-  margin-top: 5px;
-  font-size: 10px;
-  color: #b8c1d0;
-}
-
-.score {
-  margin-top: 7px;
-  font-size: 43px;
-  font-weight: 950;
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-}
-
-.percent {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 5px;
-}
-
-.versus {
-  text-align: center;
-  color: #909aac;
-  font-size: 9px;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-.versus strong {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  margin: 0 auto 7px;
-  border-radius: 50%;
-  background: #202635;
-  border: 1px solid #ffffff28;
-  color: white;
-  font-size: 17px;
-}
-
-.bar-labels {
-  display: flex;
-  justify-content: space-between;
-  margin: 22px 2px 9px;
-  color: #aab4c5;
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.bar {
-  width: 100%;
-  height: 12px;
-  display: flex;
-  padding: 2px;
-  gap: 2px;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #101521;
-  border: 1px solid #ffffff22;
-}
-
-.bar13 {
-  width: 50%;
-  background: linear-gradient(90deg, #169d70, var(--green));
-  border-radius: 12px;
-  transition: width .5s;
-}
-
-.bar22 {
-  flex: 1;
-  background: linear-gradient(90deg, #ff9ab3, #e63772);
-  border-radius: 12px;
-}
-
-.stage-title {
-  display: flex;
-  justify-content: space-between;
-  margin: 27px 2px 3px;
-  font-size: 9px;
-  color: #9da7b9;
-  letter-spacing: 1.4px;
-  font-weight: bold;
-}
-
-.stage {
-  position: relative;
-  min-height: 325px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  perspective: 1000px;
-}
-
-.machine {
-  position: relative;
-  width: min(100%, 650px);
-  height: 265px;
-  transform: rotateX(2deg);
-  filter: drop-shadow(0 22px 20px #0009);
-}
-
-.cabinet {
-  position: absolute;
-  left: 1%;
-  right: 1%;
-  top: 15px;
-  height: 225px;
-  border: 1px solid #ffffff;
-  border-radius: 16px 16px 9px 9px;
-  background: linear-gradient(
+.cabinet{
+  position:absolute;
+  inset:21px 1% 23px;
+  border-radius:17px 17px 9px 9px;
+  border:1px solid #f5f5f1;
+  background:linear-gradient(
     108deg,
-    #777e88,
-    #d3d5d4 10%,
-    #f1f1ec 23%,
-    #c3c7ce 46%,
-    #e6e6e2 63%,
-    #aeb4bd 86%,
+    #777d86 0%,
+    #d5d6d4 10%,
+    #f0f0ec 23%,
+    #c8cbd0 45%,
+    #e6e6e2 62%,
+    #aeb3bb 85%,
     #747b85
   );
   box-shadow:
-    inset 0 3px 5px #fff,
-    inset 0 -14px 16px #5555,
-    0 10px 20px #0005;
+    inset 0 3px 4px #fff,
+    inset 0 -12px 16px #5555,
+    0 3px 0 #4c515a;
+}
+.cabinet:before{
+  content:"";
+  position:absolute;
+  left:3%;
+  right:3%;
+  height:22px;
+  top:-13px;
+  border-radius:12px 12px 5px 5px;
+  background:linear-gradient(#fff,#b9bdc3);
+  border:1px solid white;
+}
+.cabinet:after{
+  content:"";
+  position:absolute;
+  left:5%;
+  right:5%;
+  bottom:-12px;
+  height:12px;
+  border-radius:0 0 8px 8px;
+  background:linear-gradient(#8b9199,#434851);
+}
+.plate{
+  position:absolute;
+  right:6%;
+  top:11px;
+  font-size:8px;
+  letter-spacing:.7px;
+  font-weight:900;
+  text-align:center;
+  color:#434851;
+}
+.plate b{
+  display:block;
+  font-size:14px;
+  letter-spacing:2px;
 }
 
-.cabinet:before {
-  content: "";
-  position: absolute;
-  left: 3%;
-  right: 3%;
-  top: -12px;
-  height: 21px;
-  border-radius: 11px;
-  background: linear-gradient(#fff, #b6bac1);
-  border: 1px solid #fff;
+/* VISOR */
+.screen-frame{
+  position:absolute;
+  left:5%;
+  top:45px;
+  width:48%;
+  height:150px;
+  padding:7px;
+  background:linear-gradient(135deg,#4d5158,#1b1e23);
+  border:1px solid #757b82;
+  border-radius:5px;
+  box-shadow:inset 0 2px 5px #0009;
+}
+.screen{
+  height:100%;
+  padding:8px;
+  color:#244044;
+  background:linear-gradient(145deg,#e2eeeb,#abc9c5);
+  border:1px solid #819a97;
+  position:relative;
+  overflow:hidden;
 }
 
-.cabinet:after {
-  content: "";
-  position: absolute;
-  bottom: -12px;
-  left: 5%;
-  width: 90%;
-  height: 13px;
-  background: linear-gradient(#838891, #3f444c);
-  border-radius: 0 0 8px 8px;
+/* LINHA DE SCANNER SEMPRE SE MOVENDO */
+.screen:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-25px;
+  height:19px;
+  background:linear-gradient(#ffffff50,transparent);
+  animation:scan 3.4s linear infinite;
+  pointer-events:none;
+}
+@keyframes scan{to{top:100%}}
+
+.screen-header{
+  text-align:center;
+  border-bottom:1px solid #4f7371;
+  padding-bottom:5px;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+.screen-office{
+  font-size:10px;
+  font-weight:900;
+  margin-top:9px;
+}
+.screen-office small{
+  display:block;
+  font-size:8px;
+  font-weight:400;
+  margin-top:4px;
+}
+.digits{
+  display:flex;
+  gap:4px;
+  margin-top:8px;
+}
+.digit{
+  width:28px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  background:#e2eeea;
+  border:1px solid #698986;
+  font:bold 24px monospace;
+}
+.screen-foot{
+  font-weight:800;
+  font-size:7px;
+  margin-top:6px;
+}
+.preview{
+  position:absolute;
+  top:41px;
+  right:6px;
+  text-align:center;
+  display:none;
+  width:62px;
+}
+.preview.visible{display:block}
+.preview img{
+  display:block;
+  width:60px;
+  height:70px;
+  object-fit:cover;
+  object-position:top;
+  border:2px solid #50726d;
+}
+.preview span{
+  font-size:7px;
+  font-weight:900;
 }
 
-.brandplate {
-  position: absolute;
-  top: 12px;
-  right: 6%;
-  text-align: center;
-  font-size: 8px;
-  color: #343942;
-  font-weight: bold;
+/* TECLADO */
+.keyboard{
+  position:absolute;
+  right:5%;
+  top:45px;
+  width:37%;
+  height:150px;
+  padding:8px;
+  border:2px solid #6c7076;
+  border-radius:6px;
+  background:linear-gradient(145deg,#373b41,#121419);
+  box-shadow:inset 0 0 10px #000b;
+}
+.keygrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+}
+.key{
+  display:grid;
+  place-items:center;
+  width:100%;
+  height:27px;
+  padding:0;
+  background:linear-gradient(#555a63,#292b30);
+  border:1px solid #6b7079;
+  border-radius:4px;
+  box-shadow:0 3px 0 #08090c;
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  transition:transform .1s,filter .1s;
+}
+.key:active,.key.pressed{
+  transform:translateY(2px);
+  filter:brightness(1.5);
+  box-shadow:0 1px 0 #08090c;
+}
+.key-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr 1.2fr;
+  gap:4px;
+  margin-top:8px;
+}
+.key.action{
+  height:27px;
+  color:#18201e;
+  font-size:7px;
+}
+.white{background:linear-gradient(#fff,#c8cbd0)}
+.correct{background:linear-gradient(#ffbc70,#e78222)}
+.confirm{background:linear-gradient(#8bf5bb,#21a664)}
+.base-label{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:5px;
+  text-align:center;
+  color:#464c54;
+  font-size:8px;
+  letter-spacing:2px;
+  font-weight:900;
 }
 
-.brandplate b {
-  display: block;
-  font-size: 15px;
-  letter-spacing: 2px;
+/* MÃO ANIMADA */
+.hand{
+  position:absolute;
+  z-index:5;
+  top:0;
+  left:0;
+  width:40px;
+  height:74px;
+  pointer-events:none;
+  opacity:0;
+  transition:left .18s,top .18s;
+  filter:drop-shadow(0 4px 3px #0006);
+}
+.hand.show{opacity:1}
+.finger{
+  position:absolute;
+  top:0;
+  left:13px;
+  width:15px;
+  height:45px;
+  border:1px solid #af7959;
+  border-radius:10px;
+  background:linear-gradient(90deg,#be8462,#f3c49f,#cf8c69);
+  transform:rotate(-10deg);
+}
+.palm{
+  position:absolute;
+  top:33px;
+  left:5px;
+  width:30px;
+  height:29px;
+  border:1px solid #ac7455;
+  border-radius:12px;
+  background:linear-gradient(110deg,#f3bf99,#ca8965);
+  transform:rotate(-13deg);
+}
+.hand.tap .finger{
+  animation:fingerTap .2s ease;
+}
+@keyframes fingerTap{
+  50%{transform:rotate(-10deg) translateY(8px)}
 }
 
-.screen-frame {
-  position: absolute;
-  top: 48px;
-  left: 5%;
-  width: 48%;
-  height: 151px;
-  padding: 7px;
-  border-radius: 5px;
-  background: linear-gradient(140deg, #51555b, #202329);
-  border: 1px solid #777c84;
-  box-shadow: inset 0 2px 6px #0009;
+/* PRESENTES */
+.gifts{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:2px;
+}
+.gift{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  color:#f4f6ff;
+  padding:13px;
+  border:1px solid #ffffff25;
+  border-radius:14px;
+  background:linear-gradient(145deg,#ffffff12,#ffffff04);
+  box-shadow:inset 0 1px #ffffff0c;
+  transition:transform .18s,border-color .18s;
+}
+.gift.rose{border-color:#46e9a65d}
+.gift.white-rose{border-color:#ff67975d}
+.gift:hover:not(:disabled){
+  transform:translateY(-2px);
+  border-color:#ffffff5c;
+}
+.gift:disabled{
+  opacity:.45;
+  cursor:wait;
+}
+.gift-icon{
+  flex:0 0 54px;
+  display:grid;
+  place-items:center;
+  width:54px;
+  height:54px;
+  border:1px solid #ffffff1c;
+  border-radius:13px;
+  background:#ffffff0b;
+  animation:giftPulse 2.4s ease-in-out infinite;
+}
+.gift-icon img{
+  display:block;
+  width:47px;
+  height:47px;
+  object-fit:contain;
+  filter:drop-shadow(0 6px 4px #0005);
+}
+@keyframes giftPulse{
+  50%{transform:translateY(-3px) scale(1.05)}
+}
+.gift-copy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.gift-copy b{
+  font-size:13px;
+  letter-spacing:1px;
+}
+.gift-copy small{
+  font-size:10px;
+  color:var(--muted);
+}
+.gift-copy em{
+  font-style:normal;
+  color:#77899f;
+  font-size:9px;
 }
 
-.screen {
-  position: relative;
-  height: 100%;
-  padding: 9px;
-  overflow: hidden;
-  color: #1d3739;
-  background: linear-gradient(135deg, #e2efea, #a7c6c3);
-  border: 1px solid #7b9995;
+.bottom{
+  margin-top:14px;
+  border:1px solid #ffffff1a;
+  border-radius:11px;
+  background:#ffffff06;
+  padding:10px 12px;
+  min-height:46px;
 }
-
-.screen-heading {
-  padding-bottom: 5px;
-  text-align: center;
-  font-size: 8px;
-  font-weight: 900;
-  border-bottom: 1px solid #4b7673;
+.message{
+  font-size:11px;
+  color:#cad5e4;
 }
-
-.screen-office {
-  margin-top: 8px;
-  font-size: 10px;
-  font-weight: 900;
+.reset{
+  padding:8px 10px;
+  color:#becbe0;
+  border-radius:7px;
+  border:1px solid #ffffff25;
+  background:transparent;
+  font-weight:800;
+  font-size:9px;
+  white-space:nowrap;
 }
-
-.screen-office small {
-  display: block;
-  margin-top: 4px;
-  font-size: 8px;
-  font-weight: normal;
+.footer{
+  margin-top:16px;
+  font-size:9px;
+  color:#768196;
+  line-height:1.6;
 }
-
-.digits {
-  display: flex;
-  gap: 3px;
-  margin-top: 9px;
+.firebase{
+  flex-shrink:0;
+  border-radius:30px;
+  padding:8px 11px;
+  background:#ffffff06;
+  border:1px solid #ffffff20;
+  font-size:9px;
+  font-weight:900;
 }
+.firebase.connected{color:var(--green)}
+.firebase.error{color:var(--pink)}
 
-.digit {
-  display: grid;
-  place-items: center;
-  width: 29px;
-  height: 35px;
-  font-size: 24px;
-  font-family: monospace;
-  font-weight: bold;
-  border: 1px solid #6d8d88;
-  background: #e5eeeb;
-}
-
-.screen-foot {
-  margin-top: 6px;
-  font-size: 7px;
-  font-weight: bold;
-}
-
-.preview {
-  display: none;
-  position: absolute;
-  top: 37px;
-  right: 8px;
-  width: 65px;
-  text-align: center;
-}
-
-.preview.visible { display: block; }
-
-.preview img {
-  width: 62px;
-  height: 73px;
-  object-fit: cover;
-  border: 2px solid #537872;
-}
-
-.preview span {
-  display: block;
-  font-size: 8px;
-  font-weight: bold;
-}
-
-.keyboard-panel {
-  position: absolute;
-  top: 48px;
-  right: 5%;
-  width: 37%;
-  height: 151px;
-  padding: 8px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #3c4047, #16181c);
-  border: 2px solid #656b74;
-}
-
-.keygrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-}
-
-.key {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 27px;
-  padding: 0;
-  cursor: pointer;
-  border: 1px solid #666d78;
-  border-radius: 4px;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  background: linear-gradient(145deg, #535862, #24262d);
-  box-shadow: 0 3px 0 #08090c;
-  transition: transform .08s, filter .08s;
-}
-
-.key:active,
-.key.pressed {
-  transform: translateY(2px);
-  filter: brightness(1.6);
-  box-shadow: 0 1px 0 #08090c;
-}
-
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.action {
-  height: 27px;
-  font-size: 7px;
-  color: #16191b;
-}
-
-.white { background: linear-gradient(#fff, #c8cbd1); }
-.correct { background: linear-gradient(#ffc178, #e88122); }
-.confirm { background: linear-gradient(#83efb1, #16a15f); }
-
-.base-label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 5px;
-  text-align: center;
-  font-size: 8px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  color: #3d434c;
-}
-
-.hand {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 40px;
-  height: 70px;
-  opacity: 0;
-  pointer-events: none;
-  transition: left .16s, top .16s;
-  filter: drop-shadow(0 3px 3px #0008);
-}
-
-.hand.show { opacity: 1; }
-
-.finger {
-  position: absolute;
-  top: 0;
-  left: 13px;
-  width: 15px;
-  height: 45px;
-  border-radius: 10px;
-  transform: rotate(-10deg);
-  background: linear-gradient(90deg, #b57855, #f5c29e, #ca8965);
-  border: 1px solid #a46b4b;
-}
-
-.palm {
-  position: absolute;
-  top: 33px;
-  left: 4px;
-  width: 31px;
-  height: 29px;
-  border-radius: 12px;
-  transform: rotate(-13deg);
-  background: linear-gradient(110deg, #efb994, #c68865);
-}
-
-.hand.tap .finger {
-  animation: fingerTap .2s ease;
-}
-
-@keyframes fingerTap {
-  50% { transform: rotate(-10deg) translateY(8px); }
-}
-
-.controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 13px;
-}
-
-.gift {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 15px;
-  text-align: left;
-  color: white;
-  cursor: pointer;
-  border-radius: 15px;
-  border: 1px solid #ffffff25;
-  background: linear-gradient(135deg, #ffffff10, #ffffff04);
-  transition: transform .15s;
-}
-
-.gift:hover { transform: translateY(-2px); }
-
-.gift:disabled {
-  opacity: .5;
-  cursor: wait;
-}
-
-.gift.green { border-color: #46e9a655; }
-.gift.pink { border-color: #ff6b9155; }
-
-.gift-symbol {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
-  background: #ffffff0b;
-  font-size: 26px;
-}
-
-.gift-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.gift-copy b {
-  font-size: 13px;
-  letter-spacing: 1px;
-}
-
-.gift-copy small {
-  font-size: 10px;
-  color: var(--muted);
-}
-
-.bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 15px;
-  padding: 12px;
-  border: 1px solid #ffffff15;
-  border-radius: 12px;
-  background: #ffffff05;
-}
-
-.message {
-  color: #d4dce7;
-  font-size: 11px;
-}
-
-.reset {
-  flex-shrink: 0;
-  padding: 8px;
-  color: #cbd3df;
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid #ffffff28;
-  border-radius: 7px;
-  font-size: 10px;
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.note {
-  color: #788396;
-  font-size: 9px;
-  line-height: 1.5;
-}
-
-.firebase-status {
-  flex-shrink: 0;
-  padding: 8px 11px;
-  border-radius: 20px;
-  border: 1px solid #ffffff20;
-  color: #bfc9d8;
-  font-size: 9px;
-  font-weight: bold;
-}
-
-.firebase-status.connected { color: var(--green); }
-.firebase-status.error { color: var(--pink); }
-
-@media (max-width: 650px) {
-  body {
-    display: block;
-    padding: 0;
-    background: var(--bg);
+/* IPHONE */
+@media(max-width:650px){
+  body{padding:0;display:block}
+  .game{
+    min-height:100dvh;
+    width:100%;
+    padding:max(20px,env(safe-area-inset-top)) 12px max(20px,env(safe-area-inset-bottom));
+    border:0;
+    border-radius:0;
+    box-shadow:none;
   }
-
-  .game {
-    width: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding:
-      max(18px, env(safe-area-inset-top))
-      12px
-      max(18px, env(safe-area-inset-bottom));
-    border: 0;
-    border-radius: 0;
+  .top{margin-bottom:19px}
+  .eyebrow{font-size:7px;letter-spacing:1px}
+  .brand{font-size:14px}
+  .status{font-size:8px;padding:8px}
+  .scoreboard{
+    grid-template-columns:minmax(0,1fr) 31px minmax(0,1fr);
+    gap:5px;
   }
-
-  .header { margin-bottom: 20px; }
-  .eyebrow { font-size: 7px; letter-spacing: 1px; }
-  .brand { font-size: 14px; letter-spacing: .3px; }
-  .status { font-size: 8px; padding: 8px; }
-
-  .scoreboard {
-    grid-template-columns: minmax(0,1fr) 32px minmax(0,1fr);
-    gap: 5px;
+  .candidate{gap:5px;padding:7px;border-radius:11px}
+  .portrait-box{flex-basis:44px;width:44px}
+  .portrait{height:58px}
+  .photo-edit{font-size:7px;padding:3px 1px}
+  .name{font-size:9px;letter-spacing:0;overflow-wrap:anywhere}
+  .number{font-size:8px;margin-top:4px}
+  .score{font-size:28px;margin-top:5px}
+  .percent{font-size:9px}
+  .vs{font-size:7px}
+  .vs b{width:29px;height:29px;font-size:12px}
+  .mini-labels{font-size:7px;margin-top:15px}
+  .stage-title{font-size:7px;margin-top:16px}
+  .stage{min-height:270px}
+  .machine{height:250px}
+  .cabinet{inset:18px 0 24px}
+  .screen-frame{
+    left:4%;width:49%;top:44px;height:140px;padding:5px;
   }
-
-  .candidate {
-    gap: 6px;
-    padding: 7px;
-    border-radius: 11px;
+  .screen{padding:5px}
+  .screen-header{font-size:6px}
+  .screen-office{font-size:8px}
+  .screen-office small{font-size:6px}
+  .digits{margin-top:6px}
+  .digit{width:23px;height:27px;font-size:19px}
+  .screen-foot{font-size:6px}
+  .preview{right:3px;width:36px;top:36px}
+  .preview img{width:35px;height:42px;border-width:1px}
+  .preview span{font-size:5px}
+  .keyboard{
+    right:4%;top:44px;width:39%;height:140px;padding:6px;
   }
-
-  .photo { width: 43px; height: 58px; }
-  .photo label { font-size: 6px; }
-  .name { font-size: 9px; letter-spacing: 0; overflow-wrap: anywhere; }
-  .number { font-size: 8px; }
-  .score { font-size: 29px; }
-  .percent { font-size: 9px; }
-
-  .versus { font-size: 6px; letter-spacing: .4px; }
-  .versus strong { width: 29px; height: 29px; font-size: 12px; }
-
-  .bar-labels { margin-top: 17px; font-size: 8px; }
-  .stage-title { font-size: 7px; }
-
-  .stage { min-height: 280px; }
-
-  .machine { height: 250px; }
-
-  .cabinet { height: 211px; }
-  .screen-frame { left: 4%; width: 49%; height: 141px; }
-  .keyboard-panel { right: 4%; width: 39%; height: 141px; padding: 6px; }
-
-  .keygrid { gap: 4px; }
-  .key { height: 24px; font-size: 12px; }
-  .actions { gap: 3px; margin-top: 7px; }
-  .action { height: 24px; font-size: 6px; }
-
-  .screen { padding: 6px; }
-  .screen-heading { font-size: 6px; }
-  .screen-office { font-size: 8px; }
-  .screen-office small { font-size: 6px; }
-  .digits { margin-top: 7px; }
-  .digit { width: 23px; height: 28px; font-size: 19px; }
-  .screen-foot { font-size: 6px; }
-  .preview { width: 36px; right: 3px; }
-  .preview img { width: 35px; height: 42px; border-width: 1px; }
-  .preview span { font-size: 5px; }
-
-  .brandplate { font-size: 6px; }
-  .brandplate b { font-size: 11px; }
-  .base-label { font-size: 6px; letter-spacing: 1px; }
-
-  .controls { gap: 8px; }
-  .gift { padding: 10px 7px; gap: 7px; }
-  .gift-symbol { width: 35px; height: 38px; font-size: 20px; }
-  .gift-copy b { font-size: 10px; }
-  .gift-copy small { font-size: 8px; }
-
-  .message { font-size: 9px; }
-  .reset { font-size: 8px; }
-  .footer { flex-direction: column; text-align: center; }
-  .note { font-size: 8px; }
-  .firebase-status { font-size: 8px; }
+  .keygrid{gap:4px}
+  .key{height:24px;font-size:12px}
+  .key-actions{gap:3px;margin-top:7px}
+  .key.action{height:24px;font-size:6px}
+  .plate{font-size:6px}
+  .plate b{font-size:11px}
+  .base-label{font-size:6px;letter-spacing:1px}
+  .gifts{gap:8px}
+  .gift{padding:9px 7px;gap:6px;border-radius:11px}
+  .gift-icon{width:40px;height:40px;flex-basis:40px}
+  .gift-icon img{width:36px;height:36px}
+  .gift-copy b{font-size:10px}
+  .gift-copy small{font-size:8px}
+  .gift-copy em{font-size:7px}
+  .message{font-size:9px}
+  .reset{font-size:8px;padding:7px}
+  .footer{
+    flex-direction:column;
+    text-align:center;
+    gap:9px;
+    font-size:8px;
+  }
+  .firebase{font-size:8px}
 }
-
-@media (max-width: 370px) {
-  .photo { width: 38px; height: 54px; }
-  .candidate { gap: 4px; padding: 5px; }
-  .score { font-size: 25px; }
-  .brand { font-size: 12px; }
-  .stage { min-height: 270px; }
+@media(max-width:360px){
+  .brand{font-size:12px}
+  .portrait-box{width:38px;flex-basis:38px}
+  .portrait{height:53px}
+  .candidate{padding:5px}
+  .name{font-size:8px}
+  .score{font-size:25px}
+  .gift-icon{flex-basis:32px;width:32px;height:34px}
+  .gift-icon img{width:31px;height:31px}
+  .gift-copy b{font-size:9px}
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .gift, .key, .bar13 { transition: none; }
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+  }
 }
 </style>
 </head>
 
 <body>
-
 <main class="game">
 
-  <header class="header">
-    <div>
-      <div class="eyebrow">● EXPERIÊNCIA INTERATIVA</div>
-      <div class="brand">◈ BATALHA <span>DA URNA</span></div>
-    </div>
+<header class="top">
+  <div>
+    <div class="eyebrow">✦ EXPERIÊNCIA INTERATIVA</div>
+    <div class="brand">◈ BATALHA <em>DA URNA</em></div>
+  </div>
+  <div class="status"><span class="dot"></span> SIMULAÇÃO ATIVA</div>
+</header>
 
-    <div class="status">
-      <span class="led"></span> SIMULAÇÃO ATIVA
-    </div>
-  </header>
-
-  <section class="scoreboard">
-
-    <article class="candidate">
-      <div class="photo">
-        <img
-          id="lulaPhoto"
+<section class="scoreboard" aria-label="Placar da simulação">
+  <article class="candidate left">
+    <div class="portrait-box">
+      <div class="portrait">
+        <img id="photo13"
           src="https://commons.wikimedia.org/wiki/Special:FilePath/Luiz_In%C3%A1cio_Lula_da_Silva_(2023).jpg"
-          alt="Lula"
-        >
-        <label for="lulaFile">TROCAR FOTO</label>
-        <input id="lulaFile" type="file" accept="image/*">
+          alt="Foto de Lula">
       </div>
-
-      <div>
-        <div class="name">LULA</div>
-        <div class="number">NÚMERO 13 · 🌹</div>
-        <div class="score" id="score13">14</div>
-        <div class="percent" id="pct13">13,9%</div>
-      </div>
-    </article>
-
-    <div class="versus">
-      <strong>VS</strong>
-      DUELO
+      <label class="photo-edit" for="file13">✎ Editar</label>
+      <input class="photo-input" id="file13" type="file" accept="image/*">
     </div>
+    <div class="details">
+      <div class="name">LULA</div>
+      <div class="number">NÚMERO 13 · ROSA</div>
+      <div class="score" id="score13">14</div>
+      <div class="percent" id="pct13">13,9%</div>
+    </div>
+  </article>
 
-    <article class="candidate right">
-      <div>
-        <div class="name">FLÁVIO BOLSONARO</div>
-        <div class="number">NÚMERO 22 · ❤️</div>
-        <div class="score" id="score22">87</div>
-        <div class="percent" id="pct22">86,1%</div>
-      </div>
+  <div class="vs"><b>VS</b>DUELO</div>
 
-      <div class="photo">
-        <img
-          id="flavioPhoto"
+  <article class="candidate right">
+    <div class="details">
+      <div class="name">FLÁVIO BOLSONARO</div>
+      <div class="number">NÚMERO 22 · ROSA BRANCA</div>
+      <div class="score" id="score22">87</div>
+      <div class="percent" id="pct22">86,1%</div>
+    </div>
+    <div class="portrait-box">
+      <div class="portrait">
+        <img id="photo22"
           src="https://commons.wikimedia.org/wiki/Special:FilePath/Fl%C3%A1vio_Bolsonaro.jpg"
-          alt="Flávio Bolsonaro"
-        >
-        <label for="flavioFile">TROCAR FOTO</label>
-        <input id="flavioFile" type="file" accept="image/*">
+          alt="Foto de Flávio Bolsonaro">
       </div>
-    </article>
+      <label class="photo-edit" for="file22">✎ Editar</label>
+      <input class="photo-input" id="file22" type="file" accept="image/*">
+    </div>
+  </article>
+</section>
 
-  </section>
+<div class="mini-labels">
+  <span>🌹 VOTOS · 13</span>
+  <span>VOTOS · 22 🤍</span>
+</div>
+<div class="meter">
+  <div id="meter13" class="meter13"></div>
+  <div class="meter22"></div>
+</div>
 
-  <div class="bar-labels">
-    <span>🌹 VOTOS · 13</span>
-    <span>VOTOS · 22 ❤️</span>
-  </div>
+<div class="stage-title">
+  <span>✦ SIMULADOR DE VOTAÇÃO</span>
+  <span>EDIÇÃO PREMIUM / LIVE</span>
+</div>
 
-  <div class="bar">
-    <div class="bar13" id="bar13"></div>
-    <div class="bar22"></div>
-  </div>
-
-  <div class="stage-title">
-    <span>● SIMULADOR DE VOTAÇÃO</span>
-    <span>EDIÇÃO PREMIUM / 01</span>
-  </div>
-
-  <section class="stage">
-    <div class="machine">
-      <div class="cabinet">
-
-        <div class="brandplate">
-          <b>URNA</b>
-          ELETRÔNICA · SIMULADOR
-        </div>
-
-        <div class="screen-frame">
-          <div class="screen">
-
-            <div class="screen-heading">
-              SIMULADOR · VOTAÇÃO FICTÍCIA
-            </div>
-
-            <div class="screen-office" id="screenOffice">
-              SEU VOTO PARA<br>
-              PRESIDENTE
-              <small>Digite o número do candidato</small>
-            </div>
-
-            <div class="digits">
-              <span class="digit" id="d1">_</span>
-              <span class="digit" id="d2">_</span>
-            </div>
-
-            <div class="screen-foot" id="screenStatus">
-              AGUARDANDO VOTO
-            </div>
-
-            <div class="preview" id="preview">
-              <img id="previewPhoto" alt="">
-              <span id="previewName"></span>
-            </div>
-
+<section class="stage" aria-label="Urna animada">
+  <div class="machine">
+    <div class="cabinet">
+      <div class="plate"><b>URNA</b>ELETRÔNICA · SIMULADOR</div>
+      <div class="screen-frame">
+        <div class="screen">
+          <div class="screen-header">SIMULADOR · VOTAÇÃO FICTÍCIA</div>
+          <div class="screen-office" id="office">
+            SEU VOTO PARA<br>PRESIDENTE
+            <small>Digite o número do candidato</small>
+          </div>
+          <div class="digits">
+            <span class="digit" id="digit1">_</span>
+            <span class="digit" id="digit2">_</span>
+          </div>
+          <div class="screen-foot" id="screenStatus">AGUARDANDO VOTO</div>
+          <div class="preview" id="preview">
+            <img id="previewPhoto" alt="Prévia do candidato">
+            <span id="previewName"></span>
           </div>
         </div>
-
-        <div class="keyboard-panel" id="keyboard">
-
-          <div class="keygrid">
-            <button class="key" data-num="1">1</button>
-            <button class="key" data-num="2">2</button>
-            <button class="key" data-num="3">3</button>
-
-            <button class="key" data-num="4">4</button>
-            <button class="key" data-num="5">5</button>
-            <button class="key" data-num="6">6</button>
-
-            <button class="key" data-num="7">7</button>
-            <button class="key" data-num="8">8</button>
-            <button class="key" data-num="9">9</button>
-
-            <span></span>
-            <button class="key" data-num="0">0</button>
-            <span></span>
-          </div>
-
-          <div class="actions">
-            <button class="key action white" id="whiteKey">BRANCO</button>
-            <button class="key action correct" id="correctKey">CORRIGE</button>
-            <button class="key action confirm" id="confirmKey">CONFIRMA</button>
-          </div>
-
-          <div class="hand" id="hand">
-            <div class="finger"></div>
-            <div class="palm"></div>
-          </div>
-
-        </div>
-
-        <div class="base-label">
-          BATALHA DA URNA · EDIÇÃO INTERATIVA
-        </div>
-
       </div>
-    </div>
-  </section>
 
-  <section class="controls">
-    <button class="gift green" id="gift13">
-      <span class="gift-symbol">🌹</span>
-      <span class="gift-copy">
-        <b>ROSA</b>
-        <small>Lula · 13 · +2 pontos</small>
-      </span>
-    </button>
-
-    <button class="gift pink" id="gift22">
-      <span class="gift-symbol">❤️</span>
-      <span class="gift-copy">
-        <b>CORAÇÃO</b>
-        <small>Flávio · 22 · +2 pontos</small>
-      </span>
-    </button>
-  </section>
-
-  <div class="bottom">
-    <div class="message" id="message">
-      Pronto para receber presentes.
-    </div>
-
-    <button class="reset" id="reset">
-      ↺ REINICIAR
-    </button>
-  </div>
-
-  <div class="footer">
-    <div class="note">
-      SIMULAÇÃO FICTÍCIA PARA ENTRETENIMENTO ·
-      NÃO REPRESENTA ELEIÇÃO OU RESULTADO OFICIAL
-    </div>
-
-    <div class="firebase-status" id="firebaseStatus">
-      FIREBASE · AGUARDANDO
+      <div class="keyboard" id="keyboard">
+        <div class="keygrid">
+          <button class="key" data-digit="1">1</button>
+          <button class="key" data-digit="2">2</button>
+          <button class="key" data-digit="3">3</button>
+          <button class="key" data-digit="4">4</button>
+          <button class="key" data-digit="5">5</button>
+          <button class="key" data-digit="6">6</button>
+          <button class="key" data-digit="7">7</button>
+          <button class="key" data-digit="8">8</button>
+          <button class="key" data-digit="9">9</button>
+          <span></span>
+          <button class="key" data-digit="0">0</button>
+          <span></span>
+        </div>
+        <div class="key-actions">
+          <button class="key action white" id="whiteKey">BRANCO</button>
+          <button class="key action correct" id="correctKey">CORRIGE</button>
+          <button class="key action confirm" id="confirmKey">CONFIRMA</button>
+        </div>
+        <div class="hand" id="hand">
+          <div class="finger"></div>
+          <div class="palm"></div>
+        </div>
+      </div>
+      <div class="base-label">BATALHA DA URNA · EDIÇÃO INTERATIVA</div>
     </div>
   </div>
+</section>
 
+<section class="gifts" aria-label="Simulação de presentes">
+  <button class="gift rose" id="gift13" type="button">
+    <span class="gift-icon">
+      <img
+        alt="Rosa vermelha"
+        src="data:image/webp;base64,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">
+    </span>
+    <span class="gift-copy">
+      <b>ROSA</b>
+      <small>Lula · 13 · +2 pontos</small>
+      <em>presente de 1 moeda</em>
+    </span>
+  </button>
+
+  <button class="gift white-rose" id="gift22" type="button">
+    <span class="gift-icon">
+      <img
+        alt="Rosa branca"
+        src="data:image/webp;base64,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">
+    </span>
+    <span class="gift-copy">
+      <b>ROSA BRANCA</b>
+      <small>Flávio · 22 · +2 pontos</small>
+      <em>presente de 1 moeda</em>
+    </span>
+  </button>
+</section>
+
+<div class="bottom">
+  <div class="message" id="message" aria-live="polite">
+    Pronto para receber presentes.
+  </div>
+  <button class="reset" id="reset" type="button">
+    ↺ REINICIAR
+  </button>
+</div>
+
+<div class="footer">
+  <div>
+    SIMULAÇÃO FICTÍCIA PARA ENTRETENIMENTO ·
+    NÃO REPRESENTA ELEIÇÃO OU RESULTADO OFICIAL
+  </div>
+  <div class="firebase" id="firebaseStatus">FIREBASE · AGUARDANDO</div>
+</div>
 </main>
 
+<!-- ANIMAÇÕES, SONS, FOTOS E PLACAR -->
 <script>
 (() => {
-
   const $ = id => document.getElementById(id);
-  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const wait = ms => new Promise(r => setTimeout(r,ms));
+  const storage = 'batalha-urna-placar-v2';
+
+  let saved;
+  try {
+    saved = JSON.parse(localStorage.getItem(storage) || 'null');
+  } catch {
+    saved = null;
+  }
 
   const state = {
-    13: 14,
-    22: 87,
-    vote: "",
+    13: Number.isInteger(saved?.['13']) && saved['13'] >= 0
+        ? saved['13'] : 14,
+    22: Number.isInteger(saved?.['22']) && saved['22'] >= 0
+        ? saved['22'] : 87,
+    vote: '',
     busy: false
   };
 
-  const keyboard = $("keyboard");
-  const hand = $("hand");
+  const persist = () => {
+    try {
+      localStorage.setItem(storage, JSON.stringify({
+        13:state[13], 22:state[22]
+      }));
+    } catch {}
+  };
 
-  let audioCtx = null;
+  /* SONS */
+  let ctx = null;
 
   function audio() {
-    const AudioClass =
-      window.AudioContext || window.webkitAudioContext;
+    const A = window.AudioContext || window.webkitAudioContext;
+    if (!A) return null;
 
-    if (!AudioClass) return null;
+    ctx ??= new A();
 
-    if (!audioCtx) audioCtx = new AudioClass();
-
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume().catch(() => {});
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
     }
 
-    return audioCtx;
+    return ctx;
   }
 
-  function tone(freq, delay, duration, volume = 0.07) {
-    const ctx = audio();
-    if (!ctx) return;
+  function beep(freq, offset, duration, vol=.07) {
+    const a = audio();
+    if (!a) return;
 
-    const start = ctx.currentTime + delay;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const t = a.currentTime + offset;
+    const o = a.createOscillator();
+    const g = a.createGain();
 
-    osc.type = "sine";
-    osc.frequency.value = freq;
+    o.type = 'sine';
+    o.frequency.value = freq;
 
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(volume, start + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t+duration);
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(start);
-    osc.stop(start + duration + 0.03);
+    o.connect(g);
+    g.connect(a.destination);
+    o.start(t);
+    o.stop(t+duration+.02);
   }
 
   function keySound() {
-    tone(720, 0, 0.07, 0.045);
+    beep(720,0,.07,.035);
   }
 
   function confirmSound() {
-    tone(880, 0, 0.12);
-    tone(1175, 0.13, 0.17);
-    tone(1568, 0.31, 0.29);
+    beep(880,0,.11);
+    beep(1175,.13,.15);
+    beep(1568,.3,.25);
   }
 
-  // O iPhone exige interação do usuário para liberar o áudio.
-  document.addEventListener("pointerdown", audio, {once:true});
-  document.addEventListener("touchstart", audio, {
-    once:true,
-    passive:true
+  // O iPhone exige um toque para liberar os sons.
+  document.addEventListener('pointerdown',audio,{once:true});
+  document.addEventListener('touchstart',audio,{
+    once:true,passive:true
   });
 
-  function message(text) {
-    $("message").textContent = text;
+  /* ESTADO DO JOGO */
+  const queue = [];
+  let running = false;
+
+  function message(s) {
+    $('message').textContent = s;
   }
 
   function renderScore() {
-    const total = state[13] + state[22];
-    const pct13 = total ? state[13] / total * 100 : 50;
-    const pct22 = total ? state[22] / total * 100 : 50;
+    let total = state[13] + state[22];
+    let p = total ? state[13]/total*100 : 50;
 
-    $("score13").textContent = state[13];
-    $("score22").textContent = state[22];
+    $('score13').textContent = state[13];
+    $('score22').textContent = state[22];
 
-    $("pct13").textContent =
-      pct13.toLocaleString("pt-BR", {maximumFractionDigits:1}) + "%";
+    $('pct13').textContent =
+      (total?p:50).toLocaleString('pt-BR',{
+        maximumFractionDigits:1
+      }) + '%';
 
-    $("pct22").textContent =
-      pct22.toLocaleString("pt-BR", {maximumFractionDigits:1}) + "%";
+    $('pct22').textContent =
+      (total?100-p:50).toLocaleString('pt-BR',{
+        maximumFractionDigits:1
+      }) + '%';
 
-    $("bar13").style.width = pct13 + "%";
+    $('meter13').style.width = p + '%';
+
+    persist();
   }
 
   function renderVote() {
-    $("d1").textContent = state.vote[0] || "_";
-    $("d2").textContent = state.vote[1] || "_";
+    $('digit1').textContent = state.vote[0] || '_';
+    $('digit2').textContent = state.vote[1] || '_';
 
-    const candidate = ["13", "22"].includes(state.vote)
-      ? state.vote
-      : null;
+    const valid = ['13','22'].includes(state.vote);
+    $('preview').classList.toggle('visible',valid);
 
-    $("preview").classList.toggle("visible", Boolean(candidate));
+    if (valid) {
+      $('previewPhoto').src =
+        $(state.vote==='13'?'photo13':'photo22').src;
 
-    if (candidate) {
-      $("previewPhoto").src =
-        $(candidate === "13" ? "lulaPhoto" : "flavioPhoto").src;
-
-      $("previewName").textContent =
-        candidate === "13" ? "LULA" : "FLÁVIO";
+      $('previewName').textContent =
+        state.vote==='13' ? 'LULA' : 'FLÁVIO';
     }
   }
 
-  function resetScreen() {
-    state.vote = "";
+  function clearVote() {
+    state.vote = '';
 
-    $("screenOffice").innerHTML =
+    $('office').innerHTML =
       'SEU VOTO PARA<br>PRESIDENTE' +
       '<small>Digite o número do candidato</small>';
 
-    $("screenStatus").textContent = "AGUARDANDO VOTO";
+    $('screenStatus').textContent = 'AGUARDANDO VOTO';
 
     renderVote();
   }
 
-  function animateScore(candidate) {
-    const score = $("score" + candidate);
-
-    if (!score.animate) return;
-
-    score.animate([
-      {transform:"scale(1)", filter:"brightness(1)"},
-      {transform:"scale(1.25)", filter:"brightness(1.8)"},
-      {transform:"scale(1)", filter:"brightness(1)"}
-    ], {duration:500});
-  }
-
-  function addPoints(candidate) {
-    state[candidate] += 2;
+  function addVote(number,quantity=1) {
+    state[number] += 2 * quantity;
     renderScore();
-    animateScore(candidate);
+
+    const el = $('score'+number);
+
+    el.animate?.([
+      {transform:'scale(1)',filter:'brightness(1)'},
+      {transform:'scale(1.25)',filter:'brightness(1.8)'},
+      {transform:'scale(1)',filter:'brightness(1)'}
+    ],{duration:500});
   }
 
-  function typeDigit(digit) {
-    if (state.busy || state.vote.length >= 2) return;
+  /* TECLADO MANUAL */
+  document.querySelectorAll('[data-digit]').forEach(key => {
+    key.addEventListener('click',() => {
+      if (state.busy || state.vote.length>=2) return;
 
-    keySound();
-    state.vote += digit;
+      keySound();
+      state.vote += key.dataset.digit;
 
-    $("screenStatus").textContent = "DIGITANDO...";
-    renderVote();
-  }
-
-  document.querySelectorAll("[data-num]").forEach(key => {
-    key.addEventListener("click", () => {
-      typeDigit(key.dataset.num);
+      $('screenStatus').textContent='DIGITANDO...';
+      renderVote();
     });
   });
 
-  $("correctKey").addEventListener("click", () => {
+  $('correctKey').addEventListener('click',() => {
     if (state.busy) return;
+
     keySound();
-    resetScreen();
-    $("screenStatus").textContent = "DIGITE NOVAMENTE";
+    clearVote();
+    $('screenStatus').textContent='DIGITE NOVAMENTE';
   });
 
-  $("whiteKey").addEventListener("click", () => {
+  $('whiteKey').addEventListener('click',() => {
     if (state.busy) return;
+
     keySound();
-    state.vote = "";
+    state.vote='';
     renderVote();
 
-    $("screenOffice").innerHTML = "VOTO EM<br>BRANCO";
-    $("screenStatus").textContent = "VOTO EM BRANCO";
+    $('office').innerHTML='VOTO EM<br>BRANCO';
+    $('screenStatus').textContent='VOTO EM BRANCO';
   });
 
-  $("confirmKey").addEventListener("click", async () => {
+  $('confirmKey').addEventListener('click',async () => {
     if (state.busy) return;
 
-    if (!["13", "22"].includes(state.vote)) {
+    if (!['13','22'].includes(state.vote)) {
       keySound();
-      message("Digite 13 ou 22.");
+      message('Digite 13 ou 22 para confirmar.');
       return;
     }
 
-    const candidate = state.vote;
-    state.busy = true;
+    state.busy=true;
+    let n=state.vote;
 
     confirmSound();
+    $('screenStatus').textContent='VOTO CONFIRMADO';
 
-    $("screenStatus").textContent = "VOTO CONFIRMADO";
+    addVote(n);
+    message('✓ Voto '+n+' confirmado · +2 pontos (teste manual).');
 
-    addPoints(candidate);
-
-    message("✓ Voto " + candidate + " confirmado · +2 pontos.");
-
-    await wait(800);
-
-    resetScreen();
-    state.busy = false;
+    await wait(650);
+    clearVote();
+    state.busy=false;
   });
 
-  function moveHand(key) {
-    const r = key.getBoundingClientRect();
-    const k = keyboard.getBoundingClientRect();
+  /* ANIMAÇÃO DA MÃO */
+  const keyboard = $('keyboard');
+  const hand = $('hand');
 
-    hand.style.left = (r.left - k.left + r.width / 2 - 17) + "px";
-    hand.style.top = (r.top - k.top - 12) + "px";
-    hand.classList.add("show");
-  }
+  async function tap(key) {
+    const a = key.getBoundingClientRect();
+    const b = keyboard.getBoundingClientRect();
 
-  async function tapKey(key) {
-    moveHand(key);
+    hand.style.left =
+      (a.left-b.left+a.width/2-17)+'px';
 
-    hand.classList.remove("tap");
+    hand.style.top =
+      (a.top-b.top-11)+'px';
+
+    hand.classList.add('show');
+    hand.classList.remove('tap');
+
     void hand.offsetWidth;
-    hand.classList.add("tap");
 
-    key.classList.add("pressed");
+    hand.classList.add('tap');
+    key.classList.add('pressed');
 
-    if (key.id === "confirmKey") {
+    if (key.id==='confirmKey') {
       confirmSound();
     } else {
       keySound();
@@ -1188,244 +1161,260 @@ button {
 
     await wait(200);
 
-    key.classList.remove("pressed");
-    hand.classList.remove("tap");
+    key.classList.remove('pressed');
+    hand.classList.remove('tap');
   }
 
-  async function sendGift(candidate) {
-    if (state.busy) return;
-
-    state.busy = true;
-    $("gift13").disabled = true;
-    $("gift22").disabled = true;
+  /* PRESENTE RECEBIDO */
+  async function animateGift(n,quantity) {
+    state.busy=true;
+    $('gift13').disabled=true;
+    $('gift22').disabled=true;
 
     try {
-      resetScreen();
-      $("screenStatus").textContent = "DIGITANDO...";
+      clearVote();
 
       message(
-        "Presente detectado! Digitando " + candidate + "..."
+        'Presente recebido: ' +
+        (n==='13'?'Rosa':'Rosa branca') +
+        (quantity>1?' ×'+quantity:'')+'!'
       );
 
-      for (const digit of candidate) {
+      $('screenStatus').textContent='DIGITANDO...';
+
+      for (const digit of n) {
         const key = keyboard.querySelector(
-          '[data-num="' + digit + '"]'
+          '[data-digit="'+digit+'"]'
         );
 
-        await tapKey(key);
+        await tap(key);
 
-        state.vote += digit;
+        state.vote+=digit;
         renderVote();
 
         await wait(170);
       }
 
-      await wait(250);
+      await wait(180);
+      await tap($('confirmKey'));
 
-      await tapKey($("confirmKey"));
+      $('screenStatus').textContent='FIM';
 
-      $("screenOffice").innerHTML =
+      $('office').innerHTML =
         '<b>VOTO CONFIRMADO</b>' +
         '<small>Simulação concluída</small>';
 
-      $("screenStatus").textContent = "FIM";
-
-      addPoints(candidate);
+      addVote(n,quantity);
 
       message(
-        "✓ +2 pontos para " +
-        (candidate === "13" ? "Lula" : "Flávio") + "!"
+        '✓ '+(2*quantity)+' pontos para ' +
+        (n==='13'?'Lula':'Flávio')+'.'
       );
 
-      await wait(950);
-
-      resetScreen();
+      await wait(850);
+      clearVote();
 
     } finally {
-      hand.classList.remove("show", "tap");
-      state.busy = false;
-      $("gift13").disabled = false;
-      $("gift22").disabled = false;
+      hand.classList.remove('show','tap');
+      state.busy=false;
+
+      $('gift13').disabled=false;
+      $('gift22').disabled=false;
     }
   }
 
-  // FILA DE VOTOS AUTOMÁTICOS
-  // Garante que presentes simultâneos sejam processados.
-  const queue = [];
-  let processing = false;
-
-  window.receberVotoTikTok = function(numero, quantidade = 1) {
-    const candidate = String(numero);
-
-    if (!["13", "22"].includes(candidate)) return;
-
-    const n = Math.max(
-      1,
-      Math.min(1000, Math.floor(Number(quantidade) || 1))
-    );
-
-    for (let i = 0; i < n; i++) {
-      queue.push(candidate);
-    }
-
-    if (!processing) {
-      void processQueue();
-    }
-  };
-
+  /* FILA AUTOMÁTICA DOS PRESENTES */
   async function processQueue() {
-    processing = true;
+    running=true;
 
     try {
       while (queue.length) {
         if (state.busy) {
-          await wait(200);
+          await wait(120);
           continue;
         }
 
-        await sendGift(queue.shift());
+        const item=queue.shift();
+        await animateGift(item.n,item.q);
       }
     } finally {
-      processing = false;
+      running=false;
+      if(queue.length) void processQueue();
     }
   }
 
-  $("gift13").addEventListener("click", () => {
-    window.receberVotoTikTok("13");
+  window.receberVotoTikTok=(numero,quantidade=1) => {
+    const n=String(numero);
+    const q=Math.floor(Number(quantidade));
+
+    if (!['13','22'].includes(n)) return;
+
+    queue.push({
+      n,
+      q:Number.isFinite(q)
+        ? Math.max(1,Math.min(q,10000))
+        : 1
+    });
+
+    if (!running) void processQueue();
+  };
+
+  $('gift13').addEventListener('click',() => {
+    window.receberVotoTikTok('13');
   });
 
-  $("gift22").addEventListener("click", () => {
-    window.receberVotoTikTok("22");
+  $('gift22').addEventListener('click',() => {
+    window.receberVotoTikTok('22');
   });
 
-  $("reset").addEventListener("click", () => {
-    if (state.busy) return;
+  $('reset').addEventListener('click',() => {
+    if(state.busy) return;
 
-    state[13] = 0;
-    state[22] = 0;
+    queue.length=0;
+    state[13]=0;
+    state[22]=0;
 
-    resetScreen();
+    clearVote();
     renderScore();
 
-    message("Placar reiniciado.");
+    message('Placar reiniciado neste aparelho.');
   });
 
-  function setupPhoto(inputId, imageId) {
-    $(inputId).addEventListener("change", event => {
-      const file = event.target.files?.[0];
+  /* TROCA DE FOTOS COM SALVAMENTO LOCAL */
+  async function editPhoto(n) {
+    const file=$('file'+n).files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
 
-      if (!file || !file.type.startsWith("image/")) return;
+    try {
+      const url=URL.createObjectURL(file);
+      const img=new Image();
 
-      const reader = new FileReader();
+      img.onload=() => {
+        const c=document.createElement('canvas');
+        const scale=Math.min(
+          1,430/img.width,560/img.height
+        );
 
-      reader.onload = () => {
-        $(imageId).src = reader.result;
+        c.width=Math.round(img.width*scale);
+        c.height=Math.round(img.height*scale);
+
+        c.getContext('2d').drawImage(
+          img,0,0,c.width,c.height
+        );
+
+        const data=c.toDataURL('image/jpeg',.82);
+        $('photo'+n).src=data;
+
+        try {
+          localStorage.setItem(
+            'batalha-urna-foto-'+n,data
+          );
+        } catch {}
+
+        URL.revokeObjectURL(url);
         renderVote();
+
+        message('Foto atualizada com sucesso.');
       };
 
-      reader.readAsDataURL(file);
-    });
+      img.src=url;
+
+    } catch(e) {
+      console.error(e);
+      message('Não foi possível abrir a imagem.');
+    }
   }
 
-  setupPhoto("lulaFile", "lulaPhoto");
-  setupPhoto("flavioFile", "flavioPhoto");
+  for(const n of ['13','22']) {
+    $('file'+n).addEventListener('change',() => editPhoto(n));
 
-  renderVote();
+    try {
+      const savedPhoto=localStorage.getItem(
+        'batalha-urna-foto-'+n
+      );
+
+      if(savedPhoto) {
+        $('photo'+n).src=savedPhoto;
+      }
+    } catch {}
+  }
+
   renderScore();
-
+  renderVote();
 })();
 </script>
 
 <!-- FIREBASE REALTIME DATABASE -->
 <script type="module">
-
-import { initializeApp } from
-  "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {initializeApp} from
+  'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 
 import {
-  getDatabase,
-  ref,
-  get,
-  query,
-  orderByKey,
-  limitToLast,
-  startAfter,
-  onChildAdded
+  getDatabase,ref,get,query,orderByKey,
+  limitToLast,startAfter,onChildAdded
 } from
-  "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+  'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
-// CONFIGURAÇÃO DO SEU FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyCYqBT-7CTC3rVlVtJPoPEviV_STFI4l60",
-  authDomain: "batalha-da-urna.firebaseapp.com",
-  databaseURL: "https://batalha-da-urna-default-rtdb.firebaseio.com",
-  projectId: "batalha-da-urna",
-  storageBucket: "batalha-da-urna.firebasestorage.app",
-  messagingSenderId: "102373615572",
-  appId: "1:102373615572:web:ae63f6d45be2f3f9849841"
+const config={
+  apiKey:'AIzaSyCYqBT-7CTC3rVlVtJPoPEviV_STFI4l60',
+  authDomain:'batalha-da-urna.firebaseapp.com',
+  databaseURL:'https://batalha-da-urna-default-rtdb.firebaseio.com',
+  projectId:'batalha-da-urna',
+  storageBucket:'batalha-da-urna.firebasestorage.app',
+  messagingSenderId:'102373615572',
+  appId:'1:102373615572:web:ae63f6d45be2f3f9849841'
 };
 
-const status = document.getElementById("firebaseStatus");
+const status=document.getElementById('firebaseStatus');
 
-function setStatus(text, kind = "") {
-  status.textContent = text;
-  status.className = "firebase-status " + kind;
+function setStatus(s,cls='') {
+  status.textContent=s;
+  status.className='firebase '+cls;
 }
 
 try {
+  const db=getDatabase(initializeApp(config));
+  const events=ref(db,'urna/events');
 
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-
-  const eventsRef = ref(database, "urna/events");
-
-  // Busca o último evento existente para não reproduzir
-  // os votos antigos toda vez que a urna for aberta.
-  const last = await get(
-    query(eventsRef, orderByKey(), limitToLast(1))
+  // Não reproduz os eventos anteriores à abertura.
+  const last=await get(
+    query(events,orderByKey(),limitToLast(1))
   );
 
-  const lastKey = last.exists()
+  const lastKey=last.exists()
     ? Object.keys(last.val())[0]
     : null;
 
-  const newEvents = lastKey
-    ? query(eventsRef, orderByKey(), startAfter(lastKey))
-    : query(eventsRef, orderByKey());
+  const fresh=lastKey
+    ? query(events,orderByKey(),startAfter(lastKey))
+    : query(events,orderByKey());
 
   onChildAdded(
-    newEvents,
+    fresh,
     snapshot => {
+      const e=snapshot.val();
+      if(!e) return;
 
-      const event = snapshot.val();
+      const n=String(e.numero??'');
 
-      if (!event) return;
-
-      // Formato enviado pelo Python:
-      // numero: "13" ou "22"
-      // quantidade: número de presentes
-      const numero = String(event.numero || "");
-      const quantidade = Number(event.quantidade || 1);
-
-      if (["13", "22"].includes(numero)) {
-        window.receberVotoTikTok(numero, quantidade);
+      if(n==='13'||n==='22') {
+        window.receberVotoTikTok(
+          n,e.quantidade??1
+        );
       }
     },
     error => {
-      console.error("Erro Firebase:", error);
-      setStatus("FIREBASE · ERRO DE LEITURA", "error");
+      console.error(error);
+      setStatus('FIREBASE · ERRO DE LEITURA','error');
     }
   );
 
-  setStatus("FIREBASE · CONECTADO", "connected");
+  setStatus('FIREBASE · CONECTADO','connected');
 
-} catch (error) {
-
-  console.error("Erro de conexão:", error);
-  setStatus("FIREBASE · DESCONECTADO", "error");
-
+} catch(error) {
+  console.error(error);
+  setStatus('FIREBASE · ERRO','error');
 }
-
 </script>
 
 </body>
